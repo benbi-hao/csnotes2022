@@ -331,5 +331,115 @@ public class Solution {
         return root1;
     }
 
-    
+    // 112. 路径总和
+    public boolean hasPathSum(TreeNode root, int targetSum) {
+        if (root == null) return false;
+        if (root.left == null && root.right == null) return targetSum == root.val;
+        targetSum = targetSum - root.val;
+        return hasPathSum(root.left, targetSum) || hasPathSum(root.right, targetSum);
+    }
+
+    // 437. 路径总和3
+    private int numPathSum = 0;
+    public int pathSum(TreeNode root, int targetSum) {
+        pathSumRecur(root, targetSum);
+        return numPathSum;
+    }
+
+    public void pathSumRecur(TreeNode root, int targetSum) {
+        if (root == null) return;
+        pathSumAsRoot(root, targetSum);
+        pathSumRecur(root.left, targetSum);
+        pathSumRecur(root.right, targetSum);
+    }
+
+    public void pathSumAsRoot(TreeNode root, long targetSum) {
+        if (root == null) return;
+        if (root.val == targetSum) { numPathSum += 1; }
+        targetSum = targetSum - root.val;
+        pathSumAsRoot(root.left, targetSum);
+        pathSumAsRoot(root.right, targetSum);
+    }
+
+    // 572. 另一棵树的子树
+    public boolean isSubtree(TreeNode root, TreeNode subRoot) {
+        if (root == null) return false;
+        return isSameTree(root, subRoot) || isSubtree(root.left, subRoot) || isSubtree(root.right, subRoot);
+    }
+
+    public boolean isSameTree(TreeNode root, TreeNode subRoot) {
+        if (root == null) return subRoot == null;
+        if (subRoot == null) return false;
+        return root.val == subRoot.val && isSameTree(root.left, subRoot.left) && isSameTree(root.right, subRoot.right);
+    }
+
+    // 101. 对称二叉树
+    public boolean isSymmetric(TreeNode root) {
+        return isSymmetric(root.left, root.right);
+    }
+
+    public boolean isSymmetric(TreeNode root1, TreeNode root2) {
+        if (root1 == null) return root2 == null;
+        if (root2 == null) return false;
+        return root1.val == root2.val && isSymmetric(root1.left, root2.right) && isSymmetric(root1.right, root2.left);
+    }
+
+    // 111. 二叉树的最小深度
+    public int minDepth(TreeNode root) {
+        if (root == null) return 0;
+        int left = minDepth(root.left);
+        int right = minDepth(root.right);
+        if (left == 0 || right == 0) return left + right + 1;
+        return Math.min(left, right) + 1;
+    }
+
+    // 404. 左叶子之和
+    public int sumOfLeftLeaves(TreeNode root) {
+        if (root == null) return 0;
+        int right = sumOfLeftLeaves(root.right);
+        if (root.left == null) return right;
+        int left = 0;
+        if (root.left.left == null && root.left.right == null) {
+            left = root.left.val;
+        } else {
+            left = sumOfLeftLeaves(root.left);
+        }
+        return right + left;
+    }
+
+    // 687. 最长同值路径
+    // public int longestUnivaluePath(TreeNode root) {
+    //     if (root == null) return 0;
+    //     return Math.max(longestUnivaluePathAsRootPassed(root),
+    //     Math.max(longestUnivaluePath(root.left), longestUnivaluePath(root.right)));
+    // }
+
+    // public int longestUnivaluePathAsRootPassed(TreeNode root) {
+    //     if (root == null) return 0;
+    //     return longestUnivaluePathAsRootValued(root.left, root.val) + longestUnivaluePathAsRootValued(root.right, root.val);
+    // }
+
+    // public int longestUnivaluePathAsRootValued(TreeNode root, int val) {
+    //     if (root == null) return 0;
+    //     if (root.val != val) return 0;
+    //     return Math.max(longestUnivaluePathAsRootValued(root.left, val), longestUnivaluePathAsRootValued(root.right, val)) + 1;
+    // }
+    private int lengthLongestUnivaluePath;
+    public int longestUnivaluePath(TreeNode root) {
+        lengthLongestUnivaluePath = 0;
+        longestUnivaluePathRecur(root);
+        return lengthLongestUnivaluePath;
+    }
+
+    public int longestUnivaluePathRecur(TreeNode root) {
+        if (root == null) return 0;
+        int left = longestUnivaluePathRecur(root.left);
+        int right = longestUnivaluePathRecur(root.right);
+        left = (left != 0 && root.left.val != root.val) ? 0 : left;
+        right = (right != 0 && root.right.val != root.val) ? 0 : right;
+        lengthLongestUnivaluePath = Math.max(left + right, lengthLongestUnivaluePath);
+        return Math.max(left, right) + 1;
+    }
+
+
 }

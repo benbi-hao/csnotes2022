@@ -463,4 +463,14 @@ public class Solution {
         robMemo.put(root, ret);
         return ret;
     }
+
+    // 671. 二叉树中第二小的节点
+    public int findSecondMinimumValue(TreeNode root) {
+        if (root == null || root.left == null) return -1;
+        int left = root.val == root.left.val ? findSecondMinimumValue(root.left) : root.left.val;
+        int right = root.val == root.right.val ? findSecondMinimumValue(root.right) : root.right.val;
+        if (left == -1) return right;
+        if (right == -1) return left;
+        return Math.min(left, right);
+    }
 }

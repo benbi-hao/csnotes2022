@@ -3,6 +3,8 @@ package leetcode;
 import leetcode.ds.ListNode;
 import leetcode.ds.TreeNode;
 import java.lang.Math;
+import java.util.Map;
+import java.util.HashMap;
 
 public class Solution {
     /**
@@ -441,5 +443,24 @@ public class Solution {
         return Math.max(left, right) + 1;
     }
 
+    // 337. 打家劫舍3 层次遍历
+    private Map<TreeNode, Integer> robMemo;
 
+    public int rob(TreeNode root) {
+        robMemo = new HashMap<>();
+        return robRecur(root);
+    }
+
+    public int robRecur(TreeNode root) {
+        if (root == null) return 0;
+        if (robMemo.containsKey(root)) return robMemo.get(root);
+        int left = robRecur(root.left);
+        int right = robRecur(root.right);
+        int leftChildren = 0, rightChildren = 0;
+        if (root.left != null) { leftChildren = robRecur(root.left.left) + robRecur(root.left.right); }
+        if (root.right != null) { rightChildren = robRecur(root.right.left) + robRecur(root.right.right); }
+        int ret = Math.max(left + right, root.val + leftChildren + rightChildren);
+        robMemo.put(root, ret);
+        return ret;
+    }
 }

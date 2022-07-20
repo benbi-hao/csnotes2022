@@ -5,6 +5,12 @@ import leetcode.ds.TreeNode;
 import java.lang.Math;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Queue;
+import java.util.LinkedList;
+import java.util.Stack;
+import java.util.Collections;
 
 public class Solution {
     /**
@@ -472,5 +478,99 @@ public class Solution {
         if (left == -1) return right;
         if (right == -1) return left;
         return Math.min(left, right);
+    }
+
+    // - 层次遍历
+    // 637. 二叉树的层平均值
+    public List<Double> averageOfLevels(TreeNode root) {
+        List<Double> avgs = new ArrayList<>();
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.add(root);
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            double sum = 0;
+            for (int i = 0; i < size; i++) {
+                TreeNode t = queue.poll();
+                if (t.left != null) queue.add(t.left);
+                if (t.right != null) queue.add(t.right);
+                sum += t.val;
+            }
+            avgs.add(sum / size);
+        }
+        return avgs;
+    }
+
+    // 513. 找树左下角的值
+    public int findBottomLeftValue(TreeNode root) {
+        Queue<TreeNode> queue = new LinkedList<>();
+        int bottomLeft = 0;
+        queue.add(root);
+        while(!queue.isEmpty()) {
+            int size = queue.size();
+            TreeNode t = queue.poll();
+            if (t.left != null) queue.add(t.left);
+            if (t.right != null) queue.add(t.right);
+            bottomLeft = t.val;
+            for (int i = 1; i < size; i++) {
+                t = queue.poll();
+                if (t.left != null) queue.add(t.left);
+                if (t.right != null) queue.add(t.right);  
+            } 
+        }
+        return bottomLeft;
+    }
+
+    // - 前中后序遍历
+    // 144. 二叉树的前序表示
+    // 尝试用迭代方式实现
+    public List<Integer> preorderTraversal(TreeNode root) {
+        List<Integer> traversalList = new ArrayList<>();
+        if (root == null) return traversalList;
+        Stack<TreeNode> stack = new Stack<>();
+        stack.push(root);
+        while(!stack.isEmpty()) {
+            TreeNode t = stack.pop();
+            traversalList.add(t.val);
+            if(t.right != null) stack.push(t.right);
+            if(t.left != null) stack.push(t.left);
+        }
+        return traversalList;
+    }
+
+    // 145. 二叉树的后序遍历
+    // 尝试用迭代方式实现
+    public List<Integer> postorderTraversal(TreeNode root) {
+        List<Integer> traversalList = new ArrayList<>();
+        if (root == null) return traversalList;
+        Stack<TreeNode> stack = new Stack<>();
+        stack.push(root);
+        while(!stack.isEmpty()) {
+            TreeNode t = stack.pop();
+            traversalList.add(t.val);
+            if (t.left != null) stack.push(t.left);
+            if (t.right != null) stack.push(t.right);
+        }
+        Collections.reverse(traversalList);
+        return traversalList;
+    }
+
+    // 94. 二叉树的中序遍历
+    // 尝试用迭代方式实现
+    public List<Integer> inorderTraversal(TreeNode root) {
+        List<Integer> traversalList = new ArrayList<>();
+        if (root == null) return traversalList;
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode curr = root;
+        while (curr != null || !stack.isEmpty()) {
+            if (curr == null) {
+                curr = stack.pop();
+                traversalList.add(curr.val);
+                curr = curr.right;
+            }else {
+                stack.push(curr);
+                curr = curr.left;
+            }
+        }
+        return traversalList;
     }
 }

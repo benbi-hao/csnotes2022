@@ -573,4 +573,20 @@ public class Solution {
         }
         return traversalList;
     }
+
+    // - BST
+    // 669. 修剪二叉搜索树
+    public TreeNode trimBST(TreeNode root, int low, int high) {
+        if (root == null) return null;
+        TreeNode left = null, right = null;
+        if (root.val < high) right = trimBST(root.right, low, high);
+        if (root.val > low) left = trimBST(root.left, low, high);
+        if (root.val > high) return left;
+        if (root.val < low) return right;
+        root.left = left;
+        root.right = right;
+        return root;
+    }
+
+    
 }

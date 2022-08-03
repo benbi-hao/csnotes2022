@@ -588,5 +588,67 @@ public class Solution {
         return root;
     }
 
+    // 230. 二叉搜索树中第k小的元素
+        private int kthSmallestCnt;
+        private int kthSmallestRet;
+        public int kthSmallest(TreeNode root, int k) {      // 中序遍历，常数空间复杂度
+            kthSmallestCnt = 0;
+            kthSmallestRecur(root, k);
+            return kthSmallestRet;
+        }
+
+        public void kthSmallestRecur(TreeNode root, int k) {
+            if (root == null) return;
+            kthSmallestRecur(root.left, k);
+            if (kthSmallestCnt >= k) {
+                return;
+            } else {
+                kthSmallestRet = root.val;
+                kthSmallestCnt += 1;
+            }
+            kthSmallestRecur(root.right, k);
+        }
+
+    // 538. 把二叉搜索树转换为累加树
+    private int convertBSTSum;
+    public TreeNode convertBST(TreeNode root) {             // 反向中序遍历
+        convertBSTSum = 0;
+        convertBSTRecur(root);
+        return root;
+    }
+
+    public void convertBSTRecur(TreeNode root) {
+        if (root == null) return;
+        convertBSTRecur(root.right);
+        root.val += convertBSTSum;
+        convertBSTSum = root.val;
+        convertBSTRecur(root.left);
+    }
+
+    // 235. 二叉搜索树的最近公共祖先
+    public TreeNode lowestCommonAncestorBST(TreeNode root, TreeNode p, TreeNode q) {
+        if (root == null) return root;
+        int hi, lo;
+        if (p.val > q.val) { hi = p.val; lo = q.val; }
+        else { hi = q.val; lo = p.val; }
+        return lowestCommonAncestorBST(root, lo, hi);
+    }
+
+    public TreeNode lowestCommonAncestorBST(TreeNode root, int lo, int hi) {
+        if (root == null) return root;
+        if (root.val >= lo && root.val <= hi) return root;
+        else if (root.val > hi) return lowestCommonAncestorBST(root.left, lo, hi);
+        else return lowestCommonAncestorBST(root.right, lo, hi);
+    }
+
+    //  236. 二叉树的最近公共祖先
+    public TreeNode lowestCommonAncestorT(TreeNode root, TreeNode p, TreeNode q) {
+        if (root == null || root.val == p.val || root.val == q.val) return root;
+        TreeNode left = lowestCommonAncestorT(root.left, p, q);
+        TreeNode right = lowestCommonAncestorT(root.right, p, q);
+        if (left == null) return right;
+        if (right == null) return left;
+        return root;
+    }
     
 }

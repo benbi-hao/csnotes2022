@@ -3,14 +3,7 @@ package leetcode;
 import leetcode.ds.ListNode;
 import leetcode.ds.TreeNode;
 import java.lang.Math;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Queue;
-import java.util.LinkedList;
-import java.util.Stack;
-import java.util.Collections;
+import java.util.*;
 
 public class Solution {
     /**
@@ -650,5 +643,141 @@ public class Solution {
         if (right == null) return left;
         return root;
     }
+
+    // 108. 将有序数组转换为二叉搜索树
+    public TreeNode sortedArrayToBST(int[] nums) {
+        return sortedArrayToBST(nums, 0, nums.length - 1);
+    }
+
+    public TreeNode sortedArrayToBST(int[] nums, int lo, int hi) {
+        if (lo > hi) return null;
+        int mid = (lo + hi) / 2;
+        TreeNode root = new TreeNode(nums[mid]);
+        root.left = sortedArrayToBST(nums, lo, mid - 1);
+        root.right = sortedArrayToBST(nums, mid + 1, hi);
+        return root;
+    }
+
+    // 109. 有序链表转换二叉搜索树
+    public TreeNode sortedListToBST(ListNode head) {            // 空间换时间
+        int len = 0;
+        for (ListNode p = head; p != null; p=p.next) len++;
+        int[] nums = new int[len];
+        ListNode p = head;
+        for (int i = 0; i < len; i++) {
+            nums[i] = p.val;
+            p = p.next;
+        }
+        return sortedArrayToBST(nums, 0, len - 1);
+    }
+
+    // 653. 两数之和IV-输入BST
+    private Set<Integer> findTargetSet;
+    private boolean findTargetFlag;
+    private int findTargetSum;
+    public boolean findTarget(TreeNode root, int k) {           // 使用集合
+        findTargetSet = new HashSet<>();
+        findTargetFlag = false;
+        findTargetSum = k;
+        return findTargetTravesal(root);
+    }
+
+    public boolean findTargetTravesal(TreeNode root) {
+        if (root == null) return false;
+        if (findTargetFlag) return true;
+        if (findTargetSet.contains(root.val)) {
+            findTargetFlag = true;
+            return true;
+        }
+        findTargetSet.add(findTargetSum - root.val);
+        return findTargetTravesal(root.left) || findTargetTravesal(root.right);
+    }
+
+    private List<Integer> findTargetList;
+    public boolean findTargetArray(TreeNode root, int k) {      // 利用BST中序遍历有序特性（更快）
+        findTargetList = new ArrayList<>();
+        findTargetInorder(root);
+        int lo = 0, hi = findTargetList.size() - 1;
+        while (lo < hi) {
+            int sum = findTargetList.get(lo) + findTargetList.get(hi);
+            if (sum == k) return true;
+            else if (sum < k) lo++;
+            else hi--;
+        }
+        return false;
+    }
+
+    public void findTargetInorder(TreeNode root) {
+        if (root == null) return;
+        findTargetInorder(root.left);
+        findTargetList.add(root.val);
+        findTargetInorder(root.right);
+    }
     
+    // 530. 二叉搜索树的最小绝对差
+    private int getMinimumDifferenceCurr;
+    private int getMinimumDifferenceMinDiff;
+    public int getMinimumDifference(TreeNode root) {                // O(1)空间复杂度，比读成数组好
+        getMinimumDifferenceCurr = -1;
+        getMinimumDifferenceMinDiff = Integer.MAX_VALUE;
+        getMinimumDifferenceInorder(root);
+        return getMinimumDifferenceMinDiff;
+    }
+    public void getMinimumDifferenceInorder(TreeNode root) {
+        if (root == null) return;
+        getMinimumDifferenceInorder(root.left);
+        if (getMinimumDifferenceCurr != -1) {
+            getMinimumDifferenceMinDiff = Math.min(getMinimumDifferenceMinDiff, root.val - getMinimumDifferenceCurr);
+        }
+        getMinimumDifferenceCurr = root.val;
+        getMinimumDifferenceInorder(root.right);
+    }
+
+    // 501. 二叉搜索树中的众数
+    private int findModeCurr;
+    private int findModeCurrCnt;
+    private int findModeMostCnt;
+    private List<Integer> findModeList;
+    public int[] findMode(TreeNode root) {
+        findModeCurr = Integer.MIN_VALUE;
+        findModeCurrCnt = 0;
+        findModeMostCnt = 0;
+        findModeList = new ArrayList<>();
+        findModeInorder(root);
+        // 收尾
+        if (findModeCurrCnt >= findModeMostCnt) {
+            if (findModeCurrCnt > findModeMostCnt){
+                findModeMostCnt = findModeCurrCnt;
+                findModeList.clear();
+            }
+            findModeList.add(findModeCurr);
+        }
+        int[] ret = new int[findModeList.size()];
+        int i = 0;
+        for (int num : findModeList) {
+            ret[i++] = num;
+        }
+        return ret;
+        // 用stream转换数组虽然只需要一行，但是速度非常慢
+        // return findModeList.stream().mapToInt(Integer::valueOf).toArray();
+    }
+
+    public void findModeInorder(TreeNode root) {
+        if (root == null) return;
+        findModeInorder(root.left);
+        if (findModeCurr == root.val) {
+            findModeCurrCnt++;
+        } else {
+            if (findModeCurrCnt >= findModeMostCnt) {
+                if (findModeCurrCnt > findModeMostCnt){
+                    findModeMostCnt = findModeCurrCnt;
+                    findModeList.clear();
+                }
+                findModeList.add(findModeCurr);
+            }
+            findModeCurr = root.val;
+            findModeCurrCnt = 1;
+        }
+        findModeInorder(root.right);
+    }
 }

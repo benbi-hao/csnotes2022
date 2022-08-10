@@ -1,0 +1,4 @@
+*.class
+*.sh
+*.bat
+.DS_Store

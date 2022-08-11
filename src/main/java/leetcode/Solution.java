@@ -787,4 +787,119 @@ public class Solution {
 
     // 677. 键值映射
     // 见leetcode.ds.MapSum
+
+
+    /**
+     * 栈和队列
+     */
+
+    // 232. 用栈实现队列
+    // 见leetcode.ds.MyQueue
+
+    // 225. 用队列实现栈
+    // 见leetcode.ds.MyStack
+
+    // 155. 最小栈
+    // 见leetcode.ds.MinStack
+
+    // 20. 有效的括号
+    public boolean isValid(String s) {
+        int len = s.length();
+        if (len % 2 == 1) return false;
+        Stack<Character> stack = new Stack<>();
+        for (int i = 0; i < len; i++) {
+            char c = s.charAt(i);
+            if (c == '(' || c == '[' || c == '{') {
+                stack.push(c);
+            } else {
+                if (stack.isEmpty() || stack.pop() != isValidLeftOf(c)) return false;
+            }
+        }
+        return stack.isEmpty();
+    }
+
+    private char isValidLeftOf(char r) {
+        switch (r) {
+            case ')':
+                return '(';
+            case ']':
+                return '[';
+            case '}':
+                return '{';
+            default:
+                return ' ';
+        }
+    }
+
+    // 739. 每日温度
+    public int[] dailyTemperatures(int[] temperatures) {                // 反向遍历，栈
+        int len = temperatures.length;
+        int[] ret = new int[len];
+        Stack<Integer> stack = new Stack<>();
+        for (int i = len - 1; i >= 0; i--) {
+            while (!stack.isEmpty() && temperatures[stack.peek()] <= temperatures[i]) stack.pop();
+            if (stack.isEmpty()) ret[i] = 0;
+            else ret[i] = stack.peek() - i;
+            stack.push(i);
+        }
+        return ret;
+    }
+
+    public int[] dailyTemperaturesForward(int[] temperatures) {         // 正向遍历，栈（优于反向，因为遵循了栈内存放待解决问题的思路）
+        int len = temperatures.length;
+        int[] ret = new int[len];
+        Stack<Integer> stack = new Stack<>();
+        for (int i = 0; i < len; i++) {
+            while (!stack.isEmpty() && temperatures[stack.peek()] < temperatures[i]) {
+                int prev = stack.pop();
+                ret[prev] = i - prev;
+            }
+            stack.push(i);
+        }
+        return ret;
+    }
+
+    public int[] dailyTemperaturesBrute(int[] temperatures) {
+        int n = temperatures.length;
+        int[] ret = new int[n];
+        for (int i = 0; i < n; i++) {
+            for (int j = i + 1; j < n; j++) {
+                if (temperatures[i] < temperatures[j]) {
+                    ret[i] = j - i;
+                    break;
+                }
+            }
+        }
+        return ret;
+    }
+
+    // 503. 下一个更大的元素2
+    public int[] nextGreaterElements(int[] nums) {
+        int n = nums.length;
+        int[] ret = new int[n];
+        Stack<Integer> stack = new Stack<>();
+        int max = nums[0];
+        int maxIndex = 0;
+        for (int i = 0; i < n; i++) {
+            while (!stack.isEmpty() && nums[stack.peek()] < nums[i]) {
+                int prev = stack.pop();
+                ret[prev] = nums[i];
+            }
+            stack.push(i);
+            if (nums[i] > max) {
+                max = nums[i];
+                maxIndex = i;
+            }
+        }
+        for (int i = 0; i <= maxIndex; i++) {
+            while (nums[stack.peek()] < nums[i]) {
+                int prev = stack.pop();
+                ret[prev] = nums[i];
+            }
+        }
+        while (!stack.isEmpty()) {
+            ret[stack.pop()] = -1;
+        }
+        return ret;
+    }
 }

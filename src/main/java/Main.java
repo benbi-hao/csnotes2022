@@ -1,11 +1,11 @@
-import leetcode.ds.MapSum;
+import leetcode.Solution;
 
 public class Main {
     public static void main(String[] args){
-        MapSum mapSum = new MapSum();
-        mapSum.insert("apple", 3);  
-        mapSum.sum("ap");           // 返回 3 (apple = 3)
-        mapSum.insert("app", 2);    
-        mapSum.sum("ap");           // 返回 5 (apple + app = 3 + 2 = 5)
+        int[] temperatures = {73,74,75,71,69,72,76,73};
+        int[] ret = new Solution().dailyTemperaturesForward(temperatures);
+        for (int i : ret) {
+            System.out.println(i);
+        }
     }
 }

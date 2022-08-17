@@ -933,6 +933,7 @@ public class Solution {
             freqMap.put(num, freqMap.getOrDefault(num, 0) + 1);
         }
         int ret = 0;
+        // 增强for循环和ForEach和iterator本质上是一个东西
         for(int key : freqMap.keySet()) {
             if (freqMap.containsKey(key + 1)) {
                 ret = Math.max(ret, freqMap.get(key) + freqMap.get(key + 1));
@@ -941,5 +942,32 @@ public class Solution {
         return ret;
     }
 
+    // 128. 最长连续序列
+    private Map<Integer, Integer> longestConsecutiveLengthMap;
+    private int longestConsecutiveMax;
+    public int longestConsecutive(int[] nums) {
+        longestConsecutiveMax = 0;
+        longestConsecutiveLengthMap = new HashMap<>();
+        for (int num : nums) {
+            longestConsecutiveLengthMap.put(num, 0);
+        }
+        for (int num : nums) {
+            longestConsecutiveMax = Math.max(longestConsecutiveMax, longestConsecutiveRecur(num));
+        }
+        return longestConsecutiveMax;
+    }
+
+    public int longestConsecutiveRecur(int head) {
+        if (!longestConsecutiveLengthMap.containsKey(head)) {
+            return 0;
+        }
+        int length = longestConsecutiveLengthMap.get(head);
+        if (length != 0) {
+            return length;
+        }
+        length = longestConsecutiveRecur(head + 1) + 1;
+        longestConsecutiveLengthMap.put(head, length);
+        return length;
+    }
 
 }

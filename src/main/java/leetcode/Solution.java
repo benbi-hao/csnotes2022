@@ -902,4 +902,44 @@ public class Solution {
         }
         return ret;
     }
+
+    // - 哈希表
+    // 1. 两数之和
+    public int[] twoSum(int[] nums, int target) {
+        Map<Integer, Integer> map = new HashMap<>();
+        int n = nums.length;
+        for (int i = 0; i < n; i++) {
+            int corr = target - nums[i];
+            if (map.containsKey(corr)) return new int[]{map.get(corr), i};
+            map.put(nums[i], i);
+        }
+        return null;
+    }
+
+    // 217. 存在重复元素
+    public boolean containsDuplicate(int[] nums) {
+        Set<Integer> set = new HashSet<>();
+        for (int num : nums) {
+            if (set.contains(num)) return true;
+            set.add(num);
+        }
+        return false;
+    }
+
+    // 594. 最长和谐子序列
+    public int findLHS(int[] nums) {
+        Map<Integer, Integer> freqMap = new HashMap<>();
+        for (int num : nums) {
+            freqMap.put(num, freqMap.getOrDefault(num, 0) + 1);
+        }
+        int ret = 0;
+        for(int key : freqMap.keySet()) {
+            if (freqMap.containsKey(key + 1)) {
+                ret = Math.max(ret, freqMap.get(key) + freqMap.get(key + 1));
+            }
+        }
+        return ret;
+    }
+
+
 }

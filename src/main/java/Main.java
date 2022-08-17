@@ -1,11 +1,23 @@
-import leetcode.Solution;
-
 public class Main {
     public static void main(String[] args){
-        int[] temperatures = {73,74,75,71,69,72,76,73};
-        int[] ret = new Solution().dailyTemperaturesForward(temperatures);
-        for (int i : ret) {
-            System.out.println(i);
-        }
+        Father x = new Son();
+        x.eat();
+        
     }
+}
+
+class Father implements Eatable {
+    public void eat() {
+        System.out.println("Father eat");
+    }
+}
+
+class Son extends Father {
+    public void eat() {
+        System.out.println("Son Eat.");
+    }
+}
+
+interface Eatable {
+    void eat();
 }

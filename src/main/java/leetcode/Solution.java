@@ -970,4 +970,87 @@ public class Solution {
         return length;
     }
 
+    // - 字符串
+    // 字符串循环移位包含
+    public boolean circleSubString(String s1, String s2) {
+        return (s1 + s1).contains(s2);
+    }
+
+    // 字符串循环移位
+    public String circleShift(String s, int k) {
+        char[] cs = s.toCharArray();
+        reverseCharsequence(cs, 0, k - 1);
+        reverseCharsequence(cs, k, cs.length - 1);
+        reverseCharsequence(cs, 0, cs.length - 1);
+        return new String(cs);
+    }
+
+    private void reverseCharsequence(char[] cs, int lo, int hi) {
+        while (lo < hi) {
+            char t = cs[lo];
+            cs[lo++] = cs[hi];
+            cs[hi--] = t;
+        }
+    }
+
+    // 字符串中单词的翻转
+    public String reverseWords(String s) {
+        String[] words = s.split(" ");
+        char[] cs = s.toCharArray();
+        int index = 0;
+        for (String word : words) {
+            reverseCharsequence(cs, index, word.length() - 1);
+            index += word.length() + 1; 
+        }
+        reverseCharsequence(cs, 0, cs.length);
+        return new String(cs);
+    }
+
+    // 242. 有效的字母异位词
+    public boolean isAnagram(String s, String t) {
+        if (s.length() != t.length()) return false;
+        int n = s.length();
+        int[] freqs = new int[26];
+        for (int i = 0; i < n; i++) {
+            freqs[s.charAt(i) - 'a']++;
+        }
+        for (int i = 0; i < n; i++) {
+            freqs[t.charAt(i) - 'a']--;
+        }
+        for (int freq : freqs) {
+            if (freq != 0) return false;
+        }
+        return true;
+    }
+
+    // 409. 最长回文串
+    public int longestPalindrome(String s) {
+        int[] upperCaseFreqs = new int[26];
+        int[] lowerCaseFreqs = new int[26];
+        int n = s.length();
+        for (int i = 0; i < n; i++) {
+            char c = s.charAt(i);
+            if (c >= 'A' && c <= 'Z') {
+                upperCaseFreqs[c - 'A']++;
+            }else {
+                lowerCaseFreqs[c - 'a']++;
+            }
+        }
+        int maxLength = 0;
+        for (int freq : upperCaseFreqs) {
+            maxLength += freq;
+            if (freq % 2 != 0) {
+                maxLength -= 1;
+            }
+        }
+        for (int freq : lowerCaseFreqs) {
+            maxLength += freq;
+            if (freq % 2 != 0) {
+                maxLength -= 1;
+            }
+        }
+        return maxLength == n ? maxLength : maxLength + 1;
+    }
+
+    
 }

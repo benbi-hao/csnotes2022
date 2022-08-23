@@ -1024,7 +1024,7 @@ public class Solution {
     }
 
     // 409. 最长回文串
-    public int longestPalindrome(String s) {
+    public int longestPalindromeIter(String s) {
         int[] upperCaseFreqs = new int[26];
         int[] lowerCaseFreqs = new int[26];
         int n = s.length();
@@ -1052,5 +1052,123 @@ public class Solution {
         return maxLength == n ? maxLength : maxLength + 1;
     }
 
+    // 205. 同构字符串
+    public boolean isIsomorphic(String s, String t) {
+        char[] smap = new char[256];
+        char[] tmap = new char[256];
+        int n = s.length();
+        for (int i = 0; i < n; i++) {
+            char sc = s.charAt(i);
+            char tc = t.charAt(i);
+            if (smap[sc] == '\0' && tmap[tc] == '\0') {
+                smap[sc] = tc;
+                tmap[tc] = sc;
+            } else {
+                if (smap[sc] != tc) return false;
+            }
+        }
+        return true;
+    }
+
+    // 647. 回文子串
+    private int countSubstringsCnt;
+    public int countSubstringsIter(String s) {              // 迭代且不使用额外空间
+        int n = s.length();
+        for (int i = 0; i < n; i++) {
+            countSubstringsExtend(s, i, i);
+            countSubstringsExtend(s, i, i + 1);
+        }
+        return countSubstringsCnt;
+    }
+
+    private void countSubstringsExtend(String s, int l, int r) {
+        while(l >= 0 && r < s.length() && s.charAt(l) == s.charAt(r)) {
+            countSubstringsCnt++;
+            l--;
+            r++;
+        }
+    }
     
+    private byte[][] countSubstringsResults;
+    public int countSubstringsRecur(String s) {             // 动态规划
+        int n = s.length();
+        countSubstringsResults = new byte[n][n];
+        int cnt = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = i; j < n; j++) {
+                if (countSubstringsIsPal(s, i, j)) {
+                    cnt++;
+                }
+            }
+        }
+        return cnt;
+    }
+
+    private boolean countSubstringsIsPal(String s, int l, int r) {
+        if (l > r) return true;
+        if (countSubstringsResults[l][r] != 0) return countSubstringsResults[l][r] == 1;
+        boolean ret = s.charAt(l) == s.charAt(r) && countSubstringsIsPal(s, l + 1, r - 1);
+        countSubstringsResults[l][r] = (byte) (ret ? 1 : 2);
+        return ret;
+    }
+
+    // 9. 回文数
+    public boolean isPalindromeIter(int x) {                // 算位数然后迭代
+        if (x < 0) return false;
+        int t = x;
+        int n = 0;
+        while (t != 0) {
+            n++;
+            t /= 10;
+        }
+        int lo, hi;
+        lo = n / 2 - 1;
+        if (n % 2 == 0) {
+            hi = n / 2;
+        } else {
+            hi = n / 2 + 1;
+        }
+        while (lo >= 0) {
+            if (isPalindromeDigitOf(x, lo--) != isPalindromeDigitOf(x, hi++)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private int isPalindromeDigitOf(int num, int digit) {
+        return (num / (int) Math.pow(10, digit)) % 10;
+    }
+
+    public boolean isPalindrome(int x) {                    // 利用整数运算，比较int高位和低位翻转
+        if (x == 0) return true;
+        if (x < 0 || x % 10 == 0) return false;
+        int right = 0;
+        while (x > right) {
+            right = right * 10 + x % 10;
+            x /= 10;
+        }
+        return x == right || x == right / 10;
+    }
+
+    // 696. 计数二进制字符串
+    public int countBinarySubstrings(String s) {
+        int cnt = 0;
+        int n = s.length();
+        char curr = s.charAt(0);
+        int currSecLen = 1;
+        int prevSecLen = 0;
+        for (int i = 1; i < n; i++) {
+            if (s.charAt(i) != curr) {
+                cnt += Math.min(prevSecLen, currSecLen);
+                curr = s.charAt(i);
+                prevSecLen = currSecLen;
+                currSecLen = 1;
+            } else {
+                currSecLen++;
+            }
+        }
+        cnt += Math.min(prevSecLen, currSecLen);
+        return cnt;
+    }
 }

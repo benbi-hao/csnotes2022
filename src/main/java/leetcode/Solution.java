@@ -1171,4 +1171,24 @@ public class Solution {
         cnt += Math.min(prevSecLen, currSecLen);
         return cnt;
     }
+
+    // - 数组与矩阵
+    // 283. 移动零
+    public void moveZeros(int[] nums) {
+        int n = nums.length;
+        int fast = 0, slow = 0;
+        while (fast < n) {
+            while (fast < n && nums[fast] == 0) {
+                fast++;
+            }
+            if (fast >= n) break;
+            nums[slow++] = nums[fast++];
+        }
+        while (slow < n) {
+            nums[slow++] = 0;
+        }
+    }
 }
+
+
+

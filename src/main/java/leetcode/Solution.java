@@ -1176,18 +1176,93 @@ public class Solution {
     // 283. 移动零
     public void moveZeros(int[] nums) {
         int n = nums.length;
-        int fast = 0, slow = 0;
-        while (fast < n) {
-            while (fast < n && nums[fast] == 0) {
-                fast++;
+        int i = 0;
+        for (int num : nums) {
+            if (num != 0) {
+                nums[i++] = num;
             }
-            if (fast >= n) break;
-            nums[slow++] = nums[fast++];
         }
-        while (slow < n) {
-            nums[slow++] = 0;
+        while (i < n) {
+            nums[i++] = 0;
         }
     }
+
+    // 566. 重塑矩阵
+    public int[][] matrixReshape(int[][] mat, int r, int c) {
+        int m = mat.length, n = mat[0].length;
+        int dim = m * n;
+        if (r * c != dim) return mat;
+        int[][] ret = new int[r][c];
+        int i = 0, j = 0;
+        for (int[] row : mat) {
+            for (int num : row) {
+                ret[i][j] = num;
+                if (j == c - 1) {
+                    i += 1;
+                    j = 0;
+                } else {
+                    j += 1;
+                }
+            }
+        }
+        return ret;
+    }
+
+    // 485. 最大连续1的个数
+    public int findMaxConsecutiveOnes(int[] nums) {
+        int ret = 0;
+        int currLen = 0;
+        for (int num : nums) {
+            currLen = num == 1 ? currLen + 1 : 0;
+            ret = Math.max(ret, currLen);
+        }
+        return ret; 
+    }
+
+    // 240. 搜索二维矩阵2
+    public boolean searchMatrix(int[][] matrix, int target) {      // 过程相当于一步步将目标空间缩小
+        int m = matrix.length, n = matrix[0].length;
+        int i = 0, j = n - 1;
+        while (i < m && j >= 0) {
+            if (matrix[i][j] == target) return true;
+            else if (matrix[i][j] < target) i++;
+            else j--;
+        }
+        return false;
+    }
+
+    // 378. 有序矩阵中第K小的元素
+    public int kthSmallest(int[][] matrix, int k) {
+        int m = matrix.length, n = matrix[0].length;
+        int lo = matrix[0][0], hi = matrix[m - 1][n - 1];
+        while (lo < hi) {
+            int mid = lo + (hi - lo) / 2;
+            int cnt = 0;
+            for (int i = 0; i < m; i++) {
+                for (int j = 0; j < n && matrix[i][j] <= mid; j++) {
+                    cnt++;
+                }
+            }
+            if (cnt < k) lo = mid + 1;
+            else hi = mid;
+        }
+        return lo;
+    }
+
+    // 645. 错误的集合
+    public int[] findErrorNums(int[] nums) {
+        int[] ret = new int[2];
+        int n = nums.length;
+        for (int i = 0; i < n; i++) {
+            if (nums[i] == 0) continue;
+            int j = nums[i] - 1;
+            while (nums[j] != 0) {
+                
+            }
+        }
+    }
+
+
 }
 
 

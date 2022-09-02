@@ -1251,15 +1251,22 @@ public class Solution {
 
     // 645. 错误的集合
     public int[] findErrorNums(int[] nums) {
-        int[] ret = new int[2];
         int n = nums.length;
         for (int i = 0; i < n; i++) {
-            if (nums[i] == 0) continue;
-            int j = nums[i] - 1;
-            while (nums[j] != 0) {
-                
+            while (nums[i] != i + 1 && nums[i] != nums[nums[i] - 1]) {
+                findErrorNumsSwap(nums, i, nums[i] - 1);
             }
         }
+        for (int i = 0; i < n; i++) {
+            if (nums[i] != i + 1) return new int[]{nums[i], i + 1};
+        }
+        return null;
+    }
+
+    private void findErrorNumsSwap(int[] nums, int i, int j) {
+        int t = nums[i];
+        nums[i] = nums[j];
+        nums[j] = t;
     }
 
 

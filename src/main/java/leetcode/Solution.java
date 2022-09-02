@@ -1291,7 +1291,7 @@ public class Solution {
         return ans;
     }
 
-    public int findDuplicate(int[] nums) {
+    public int findDuplicate(int[] nums) {                  // 问题转换
         int slow = nums[0], fast = nums[nums[0]];
         while (slow != fast) {
             slow = nums[slow];

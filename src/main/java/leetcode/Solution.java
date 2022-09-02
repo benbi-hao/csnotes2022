@@ -1269,6 +1269,42 @@ public class Solution {
         nums[j] = t;
     }
 
+    // 287. 寻找重复数
+    public int findDuplicateBin(int[] nums) {              // 在取值空间上做二分查找，相当于找间隔右侧
+        int n = nums.length;
+        int l = 1, r = n - 1, ans = -1;
+        while (l <= r) {
+            int mid = (l + r) >> 1;
+            int cnt = 0;
+            for (int i = 0; i < n; ++i) {
+                if (nums[i] <= mid) {
+                    cnt++;
+                }
+            }
+            if (cnt <= mid) {
+                l = mid + 1;
+            } else {
+                r = mid - 1;
+                ans = mid;
+            }
+        }
+        return ans;
+    }
+
+    public int findDuplicate(int[] nums) {
+        int slow = nums[0], fast = nums[nums[0]];
+        while (slow != fast) {
+            slow = nums[slow];
+            fast = nums[nums[fast]];
+        }
+        slow = 0;
+        while (slow != fast) {
+            slow = nums[slow];
+            fast = nums[fast];
+        }
+        return slow;
+    }
+
 
 }
 

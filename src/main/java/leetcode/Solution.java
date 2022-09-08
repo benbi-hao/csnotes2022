@@ -2,6 +2,8 @@ package leetcode;
 
 import leetcode.ds.ListNode;
 import leetcode.ds.TreeNode;
+import leetcode.util.UnionFind;
+
 import java.lang.Math;
 import java.util.*;
 
@@ -903,7 +905,9 @@ public class Solution {
         return ret;
     }
 
-    // - 哈希表
+    /**
+     * 哈希表
+     */
     // 1. 两数之和
     public int[] twoSum(int[] nums, int target) {
         Map<Integer, Integer> map = new HashMap<>();
@@ -970,7 +974,9 @@ public class Solution {
         return length;
     }
 
-    // - 字符串
+    /**
+     * 字符串
+     */
     // 字符串循环移位包含
     public boolean circleSubString(String s1, String s2) {
         return (s1 + s1).contains(s2);
@@ -1172,7 +1178,9 @@ public class Solution {
         return cnt;
     }
 
-    // - 数组与矩阵
+    /**
+     * 数组与矩阵
+     */
     // 283. 移动零
     public void moveZeros(int[] nums) {
         int n = nums.length;
@@ -1305,7 +1313,208 @@ public class Solution {
         return slow;
     }
 
+    // 667. 优美的排列
+    public int[] constructArray(int n, int k) {
+        int[] array = new int[n];
+        int idx = 0;
+        int lo = 1, hi = n;
+        while (k > 0) {
+            if (idx % 2 == 0) {
+                array[idx] = lo++;
+            } else {
+                array[idx] = hi--;
+            }
+            k--;
+            idx++;
+        }
+        if (array[idx - 1] < hi) {
+            for (int i = lo; i <= hi; i++) {
+                array[idx++] = i;
+            }
+        } else {
+            for (int i = hi; i >= lo; i--) {
+                array[idx++] = i;
+            }
+        }
+        return array;
+    }
 
+    // 697. 数组的度
+    public int findShortestSubArray(int[] nums) {
+        int n = nums.length;
+        int maxFreq = 0;
+        int retLen = n + 1;
+        Map<Integer, Integer> freqs = new HashMap<>();
+        Map<Integer, Integer> leftPos = new HashMap<>();
+        Map<Integer, Integer> rightPos = new HashMap<>();
+        for (int i = 0; i < n; i++) {
+            freqs.put(nums[i], freqs.getOrDefault(nums[i], 0) + 1);
+            if (!leftPos.containsKey(nums[i])) leftPos.put(nums[i], i);
+            rightPos.put(nums[i], i);
+        }
+        Set<Map.Entry<Integer, Integer>> entrySet = freqs.entrySet();
+        for (Map.Entry<Integer, Integer> entry : entrySet) {
+            maxFreq = Math.max(maxFreq, entry.getValue());
+        }
+        for (Map.Entry<Integer, Integer> entry : entrySet) {
+            int freq = entry.getValue();
+            if (freq == maxFreq) {
+                int key = entry.getKey();
+                int len = rightPos.get(key) - leftPos.get(key) + 1;
+                if (len < retLen) {
+                    retLen = len;
+                }
+            }
+        }
+        return retLen;
+    }
+
+    // 766. 托普利茨矩阵
+    public boolean isToeplitzMatrix(int[][] matrix) {
+        for (int i = 0; i < matrix.length - 1; i++) {
+            if (!isToeplitzMatrixCompare(matrix[i], matrix[i + 1])) return false;
+        }
+        return true;
+    }
+
+    private boolean isToeplitzMatrixCompare(int[] overLine, int[] underLine) {
+        for (int i = 0; i < overLine.length - 1; i++) {
+            if (overLine[i] != underLine[i + 1]) return false;
+        }
+        return true;
+    }
+
+    // 565. 数组嵌套
+    public int arrayNesting(int[] nums) {
+        int maxSize = 1;
+        for (int i = 0; i < nums.length; i++) {
+            int size = 0;
+            int j = i;
+            while (nums[j] != -1) {
+                int t = j;
+                j = nums[j];
+                nums[t] = -1;
+                size++;
+            }
+            maxSize = Math.max(maxSize, size);
+        }
+        return maxSize;
+    }
+
+    // 769. 最多能完成排序的块
+    public int maxChunksToSorted(int[] arr) {
+        int chunkCnt = 0;
+        int max = arr[0];
+        for (int i = 0; i < arr.length; i++) {
+            max = Math.max(max, arr[i]);
+            if (max == i) {
+                chunkCnt++;
+            }
+        }
+        return chunkCnt;
+    }
+
+    /** 
+     * 图
+     */
+    // - 二分图
+    // 785. 判断二分图
+    private int[] isBipartiteColors;
+    public boolean isBipartite(int[][] graph) {
+        isBipartiteColors = new int[graph.length];
+        for (int i = 0; i < graph.length; i++) {
+            if (isBipartiteColors[i] == 0 && !isBipartite(graph, i, 1)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean isBipartite(int[][] graph, int v, int color) {      // 将上色和判断顺便放在一起，最开始的思路是将上色和判断分开来，但是比这个方法慢
+        if (isBipartiteColors[v] != 0) {
+            return isBipartiteColors[v] == color;
+        }
+        isBipartiteColors[v] = color;
+        for (int u : graph[v]) {
+            if (!isBipartite(graph, u, -color)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // - 拓扑排序
+    // 207. 课程表
+    private boolean[] canFinishGlobalMark;
+    private boolean[] canFinishLocalMark;
+    public boolean canFinish(int numCourses, int[][] prerequisites) {       // 记录dfs递归路径，如果路径折返了说明有环
+        canFinishGlobalMark = new boolean[numCourses];
+        canFinishLocalMark = new boolean[numCourses];
+        List<Integer>[] graph = new List[numCourses];
+        for (int i = 0; i < numCourses; i++) {
+            graph[i] = new ArrayList<>();
+        }
+        for (int[] req : prerequisites) {
+            graph[req[1]].add(req[0]);
+        }
+        for (int i = 0; i < numCourses; i++) {
+            if (canFinishHasCycle(graph, i)) return false;
+        }
+        return true;
+    }
+
+    public boolean canFinishHasCycle(List<Integer>[] graph, int curr) {
+        if (canFinishLocalMark[curr]) return true;
+        if (canFinishGlobalMark[curr]) return false;
+        canFinishGlobalMark[curr] = true;
+        canFinishLocalMark[curr] = true;
+        for (int next : graph[curr]) {
+            if (canFinishHasCycle(graph, next)) return true;
+        }
+        canFinishLocalMark[curr] = false;
+        return false;
+    }
+
+    // 210. 课程表2
+    public int[] findOrder(int numCourses, int[][] prerequisites) {
+        int[] indegrees = new int[numCourses];
+        List<Integer>[] sparseGraph = new List[numCourses];
+        int[] order = new int[numCourses];
+        int idx = 0;
+        for (int i = 0; i < numCourses; i++) {
+            sparseGraph[i] = new ArrayList<>();
+        }
+        for (int[] req : prerequisites) {
+            indegrees[req[0]]++;
+            sparseGraph[req[1]].add(req[0]);
+        }
+        Queue<Integer> queue = new LinkedList<>();
+        for (int i = 0; i < numCourses; i++) {
+            if (indegrees[i] == 0) queue.offer(i);
+        }
+        while (!queue.isEmpty()) {
+            int curr = queue.poll();
+            for (int next : sparseGraph[curr]) {
+                if (--indegrees[next] == 0) {
+                    queue.offer(next);
+                }
+            }
+            order[idx++] = curr;
+        }
+        return idx == numCourses ? order : new int[0];
+    }
+
+    // - 并查集
+    // 684. 冗余连接
+    public int[] findRedundantConnection(int[][] edges) {
+        int n = edges.length;
+        UnionFind uf = new UnionFind(n);
+        for (int[] edge : edges) {
+            if (uf.isConnected(edge[0], edge[1])) return edge;
+            uf.union(edge[0], edge[1]);
+        }
+        return null;
+    }
 }
 
 

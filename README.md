@@ -30,3 +30,8 @@
 - 图
   - leetcode 210 课程表2 尝试用dfs完成拓扑排序（拓扑图的逆序dfs递归返回顺序即排序结果）
   - leetcode 684 冗余连接 尝试用dfs或其他递归形式实现
+- 位运算
+  - leetcode 136 268 260 swap 复习^运算的特殊性质
+  - leetcode 338 231 342 复习&运算特殊技巧
+  - leetcode 476 复习mask计算技巧
+  - leetcode 318 复习如何用一个变量表示位图

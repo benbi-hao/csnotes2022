@@ -1515,6 +1515,138 @@ public class Solution {
         }
         return null;
     }
+
+    /**
+     * 位运算
+     */
+    // x ^ 0s = x      x & 0s = 0      x | 0s = x
+    // x ^ 1s = ~x     x & 1s = x      x | 1s = 1s
+    // x ^ x = 0       x & x = x       x | x = x
+
+    // 461. 汉明距离
+    public int hammingDistance(int x, int y) {
+        return Integer.bitCount(x ^ y);
+    }
+
+    // 136. 只出现一次的数字
+    public int singleNumber(int[] nums) {
+        int ret = 0;
+        for (int num : nums) {
+            ret ^= num;
+        }
+        return ret;
+    }
+
+    // 268. 丢失的数字
+    public int missingNumber(int[] nums) {
+        int ret = 0;
+        for (int i = 0; i < nums.length; i++) {
+            ret = ret ^ i ^ nums[i];
+        }
+        return ret ^ nums.length;
+    }
+
+    // 260. 只出现一次数字3
+    public int[] singleNumber3(int[] nums) {
+        int[] ret = new int[2];
+        int diff = 0;
+        for (int num : nums) {
+            diff ^= num;
+        }
+        diff &= -diff;
+        for (int num : nums) {
+            if ((num & diff) == 0) ret[0] ^= num;
+            else ret[1] ^= num;
+        }
+        return ret;
+    }
+
+    // 190. 颠倒二进制位
+    public int reverseBits(int n) {
+        int ret = 0;
+        for (int i = 0; i < 32; i++) {
+            ret <<= 1;
+            ret |= (n & 1);
+            n >>>= 1;
+        }
+        return ret;
+    }
+
+    // 不用额外变量交换两个数
+    public void swap(int a, int b) {
+        a = a ^ b;
+        b = a ^ b;
+        a = a ^ b;
+    }
+
+    // 231. 2的幂
+    public boolean isPowerOfTwo(int n) {
+        return n > 0 && (n & (n - 1)) == 0;
+    }
+
+    // 342. 4的幂
+    public boolean isPowerOfFour(int num) {
+        return num > 0 && (num & (num - 1)) == 0 && (num & 0x55555555) != 0;
+    }
+
+    // 693. 交替位二进制数
+    public boolean hasAlternatingBits(int n) {
+        int a = (n ^ (n >> 1));
+        return (a & (a + 1)) == 0;
+    }
+
+    // 476. 数字的补数
+    public int findComplement(int num) {
+        if (num == 0) return 1;
+        int mask = 1 << 30;
+        while ((num & mask) == 0) mask >>= 1;
+        mask = (mask << 1) - 1;
+        return num ^ mask;
+    }
+
+    public int findComplementB(int num) {
+        int mask = num;
+        mask |= mask >> 1;
+        mask |= mask >> 2;
+        mask |= mask >> 4;
+        mask |= mask >> 8;
+        mask |= mask >> 16;
+        return (mask ^ num);
+    }
+
+    // 371. 两整数之和
+    public int getSum(int a, int b) {
+        return b == 0 ? a : getSum((a ^ b), (a & b) << 1);
+    }
+
+    // 318. 最大单词长度乘积
+    public int maxProduct(String[] words) {
+        int n = words.length;
+        int[] val = new int[n];
+        for (int i = 0; i < n; i++) {
+            for (char c : words[i].toCharArray()) {
+                val[i] |= 1 << (c - 'a');
+            }
+        }
+        int ret = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = i + 1; j < n; j++) {
+                if ((val[i] & val[j]) == 0) {
+                    ret = Math.max(ret, words[i].length() * words[j].length());
+                }
+            }
+        }
+        return ret;
+    }
+
+    // 338. 比特位计数
+    public int[] countBits(int n) {
+        int[] ret = new int[n + 1];
+        for (int i = 1; i <= n; i++) {
+            ret[i] = ret[i & (i - 1)] + 1;
+        }
+        return ret;
+    }
 }
 
 

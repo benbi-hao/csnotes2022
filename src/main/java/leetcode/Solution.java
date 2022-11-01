@@ -8,6 +8,8 @@ import java.lang.Math;
 import java.util.*;
 
 public class Solution {
+    private Random random = new Random();
+
     /**
      * 链表
      */
@@ -1647,6 +1649,182 @@ public class Solution {
         }
         return ret;
     }
+
+    /**
+     * 双指针
+     */
+    // 167. 两数之和2-输入有序数组
+    public int[] twoSumOrdered(int[] numbers, int target) {
+        int lo = 0, hi = numbers.length - 1;
+        while (lo < hi) {
+            int sum = numbers[lo] + numbers[hi];
+            if (sum == target) {
+                return new int[]{lo + 1, hi + 1};
+            } else if (sum < target) {
+                lo++;
+            } else {
+                hi--;
+            }
+        }
+        return null;
+    }
+
+    // 633. 平方数之和
+    public boolean judgeSquareSum(int c) {
+        long lo = 0, hi = (long) Math.sqrt(c);
+        while (lo <= hi) {
+            long squareSum = lo * lo + hi * hi;
+            if (squareSum == c) {
+                return true;
+            } else if (squareSum < c) {
+                lo++;
+            } else {
+                hi--;
+            }
+        }
+        return false;
+    }
+
+    // 345. 反转字符串中的元音字母
+    public String reverseVowels(String s) {
+        char[] cs = s.toCharArray();
+        int i = 0, j = cs.length - 1;
+        while (i < j) {
+            while (!isVowel(cs[i]) && i < j) i++;
+            while (!isVowel(cs[j]) && i < j) j--;
+            if (i < j) {
+                char t = cs[i];
+                cs[i++] = cs[j];
+                cs[j--] = t;
+            }
+        }
+        return new String(cs);
+    }
+
+    private boolean isVowel(char c) {
+        return c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u' ||
+            c == 'A' || c == 'E' || c == 'I' || c == 'O' || c == 'U';
+    }
+
+    // 680. 验证回文串2
+    public boolean validPalindromeRemoveOne(String s) {
+        int i = 0, j = s.length() - 1;
+        while (s.charAt(i) == s.charAt(j) && i < j) {
+            i++;
+            j--;
+        }
+        if (i >= j) return true;
+        if (s.charAt(i) == s.charAt(j - 1)) {
+            int ti = i;
+            int tj = j - 1;
+            while (s.charAt(ti) == s.charAt(tj) && ti < tj) {
+                ti++;
+                tj--;
+            }
+            if (ti >= tj) return true;
+        }
+        if (s.charAt(i + 1) == s.charAt(j)) {
+            i++;
+        } 
+        while (s.charAt(i) == s.charAt(j) && i < j) {
+            i++;
+            j--;
+        }
+        return i >= j;
+    }
+
+    // 88. 合并两个有序数组
+    public void merge(int[] nums1, int m, int[] nums2, int n) {
+        int i = m + n - 1, i1 = m - 1, i2 = n - 1;
+        while (i1 >= 0 && i2 >= 0) {
+            if (nums2[i2] >= nums1[i1]) {
+                nums1[i--] = nums2[i2--];
+            } else {
+                nums1[i--] = nums1[i1--];
+            }
+        }
+        if (i2 >= 0) {
+            System.arraycopy(nums2, 0, nums1, 0, i2 + 1);
+        }
+    }
+
+    // 141. 环形链表
+    public boolean hasCycle(ListNode head) {
+        if (head == null) return false;
+        ListNode slow = head, fast = head.next;
+        while (fast != null && fast.next != null) {
+            if (slow == fast) return true;
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        return false;
+    }
+
+    // 524. 通过删除字母匹配到字典里最长单词
+    public String findLongestWord(String s, List<String> dictionary) {
+        String longestWord = "";
+        int len = s.length();
+        for (String word : dictionary) {
+            int longest = longestWord.length(), currLen = word.length();
+            if (currLen < longest || (currLen == longest) && longestWord.compareTo(word) < 0) {
+                continue;
+            }
+            int i = 0, j = 0;
+            while (i < currLen && j < len){
+                if (word.charAt(i) == s.charAt(j++)) i++;
+            }
+            if (i == currLen) longestWord = word;
+        }
+        return longestWord;
+    }
+
+    /**
+     * 排序
+     */
+    // 215. 数组中的第K个最大元素(快速选择)
+    public int findKthLargest(int[] nums, int k) {
+        k = nums.length - k;
+        int l = 0, h = nums.length - 1;
+        while (l < h) {
+            int pivotIndex = randomPartition(nums, l, h);
+            if (pivotIndex == k) {
+                break;
+            } else if (pivotIndex < k) {
+                l = pivotIndex + 1;
+            } else {
+                h = pivotIndex - 1;
+            }
+        }
+        return nums[k];
+    }
+
+    private int randomPartition(int[] nums, int l, int h) {
+        int r = random.nextInt(h - l + 1) + l;
+        swap(nums, l, r);
+        return partition(nums, l, h);
+    }
+
+    private int partition(int[] nums, int l, int h) {
+        int i = l, j = h + 1;
+        while (true) {
+            while (nums[++i] < nums[l] && i < h);
+            while (nums[--j] > nums[l] && j > l);
+            if (i >= j) {
+                break;
+            }
+            swap(nums, i, j);
+        }
+        swap(nums, l, j);
+        return j;
+    }
+
+    private void swap(int[] a, int i, int j) {
+        int t = a[i];
+        a[i] = a[j];
+        a[j] = t;
+    }
+
+    // 
 }
 
 

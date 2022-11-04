@@ -1824,7 +1824,20 @@ public class Solution {
         a[j] = t;
     }
 
-    // 
+    // 75. 颜色分类
+    public void sortColors(int[] nums) {
+        int lo = 0, hi = nums.length - 1;
+        int i = 0;
+        while (i <= hi) {
+            if (nums[i] == 2) {
+                swap(nums, hi--, i);
+            } else if (nums[i] == 0) {
+                swap(nums, lo++, i++);
+            } else {
+                i++;
+            }
+        }
+    }
 }
 
 

@@ -1838,6 +1838,76 @@ public class Solution {
             }
         }
     }
+
+    /**
+     * 贪心思想
+     */
+
+    // 455. 分饼干
+    public int findContentChildren(int[] g, int[] s) {
+    int i = 0, j = 0;
+    Arrays.sort(g);
+    Arrays.sort(s);
+    while (j < s.length && i < g.length) {
+        if (g[i] <= s[j]) {
+            i++;
+        }
+        j++;
+    }
+    return i;
+    }
+
+    // 435. 无重叠区间
+    public int eraseOverlapIntervals(int[][] intervals) {
+        int cntToRemove = 0;
+        // Arrays.sort(intervals, (int[] i1, int[] i2) -> i1[1] - i2[1]);
+        Arrays.sort(intervals, Comparator.comparingInt(o -> o[1]));
+        int bound = Integer.MIN_VALUE;
+        for (int[] i: intervals) {
+            System.out.println(i[0]);
+            System.out.println(i[1]);
+            if (i[0] >= bound) {
+                bound = i[1];
+            } else {
+                cntToRemove++;
+            }
+        }
+        return cntToRemove;
+    }
+
+    // 452. 用最少数量的箭引爆气球
+    public int findMinArrowShotsSortLeft(int[][] points) {
+        if (points.length == 0) return 0;
+        int cnt = 1;
+        Arrays.sort(points, Comparator.comparingInt(o -> o[0]));
+        int shot = points[0][1];
+        for (int[] i: points) {
+            if (shot < i[0]) {
+                cnt++;
+                shot = i[1];
+            } else if (i[1] < shot) {
+                shot = i[1];
+            }
+        }
+        return cnt;
+    }
+
+    public int findMinArrowShotsSortRight(int[][] points) {
+        if (points.length == 0) return 0;
+        int cnt = 1;
+        Arrays.sort(points, Comparator.comparingInt(o -> o[1]));
+        int shot = points[0][1];
+        for (int i = 1; i < points.length; i++) {
+            if (points[i][0] <= shot) {
+                continue;
+            }
+            cnt++;
+            shot = points[i][1];
+        }
+        return cnt;
+    }
+
+
 }
 
 

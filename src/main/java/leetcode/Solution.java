@@ -1907,7 +1907,102 @@ public class Solution {
         return cnt;
     }
 
+    // 406. 根据身高重建队列
+    public int[][] reconstructQueue(int[][] people) {
+        Arrays.sort(people, (a, b) -> a[0] == b[0]? a[1] - b[1] : b[0] - a[0]);
+        List<int[]> queue = new ArrayList<>(people.length);
+        for (int[] p: people) {
+            queue.add(p[1], p);
+        }
+        return queue.toArray(new int[queue.size()][]);
+    }
 
+    // 121. 买卖股票的最佳时机
+    public int maxProfit(int[] prices) {
+        if (prices.length == 0) return 0;
+        int profit = 0;
+        int min = prices[0];
+        for (int i = 1; i < prices.length; i++) {
+            if (min > prices[i]) min = prices[i];
+            else profit = Math.max(profit, prices[i] - min);
+        }
+        return profit;
+    }
+
+    // 122. 买卖股票的最佳时机2
+    public int maxProfit2(int[] prices) {
+        if (prices.length == 0) return 0;
+        int profit = 0;
+        for (int i = 1; i < prices.length; i++) {
+            if (prices[i] > prices[i - 1]) {
+                profit += prices[i] - prices[i - 1];
+            }
+        }
+        return profit;
+    }
+
+    // 605. 种花问题
+    public boolean canPlaceFlowers(int[] flowerbed, int n) {
+        int len = flowerbed.length;
+        int cnt = 0;
+        for (int i = 0; i < len && cnt < n; i++) {
+            if (flowerbed[i] == 1) {
+                continue;
+            }
+            int prev = i == 0 ? 0 : flowerbed[i - 1];
+            int next = i == len - 1 ? 0 : flowerbed[i + 1];
+            if (prev == 0 && next == 0) {
+                flowerbed[i] = 1;
+                cnt++;
+            }
+        }
+        return cnt >= n;
+    }
+
+    // 392. 判断子问题
+    public boolean isSubsequence(String s, String t) {
+        int si = 0, ti = 0;
+        int slen = s.length(), tlen = t.length();
+        while (si < slen && ti < tlen) {
+            if (s.charAt(si) == t.charAt(ti++)) {
+                si++;
+            }
+        }
+        return si == slen;
+    }
+
+    // 665. 非递减数列
+    public boolean checkPossibility(int[] nums) {
+        int cnt= 0;
+        for (int i = 1; i < nums.length && cnt < 2; i++) {
+            if (nums[i] >= nums[i-1]) {
+                continue;
+            }
+            cnt++;
+            if (i - 2 >= 0 && nums[i - 2] > nums[i]) {
+                nums[i] = nums[i - 1];
+            } else {
+                nums[i - 1] = nums[i];
+            }
+        }
+        return cnt < 2;
+    }
+
+    // 53. 最大子数组和
+    public int maxSubArray(int[] nums) {
+        int maxSum = Integer.MIN_VALUE;
+        int sum = -1;
+        for (int num: nums) {
+            if (sum < 0) {
+                sum = 0;
+            }
+            sum += num;
+            if (sum > maxSum) {
+                maxSum = sum;
+            }
+        }
+        return maxSum;
+    }
 }
 
 

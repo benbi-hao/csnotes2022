@@ -1845,16 +1845,16 @@ public class Solution {
 
     // 455. 分饼干
     public int findContentChildren(int[] g, int[] s) {
-    int i = 0, j = 0;
-    Arrays.sort(g);
-    Arrays.sort(s);
-    while (j < s.length && i < g.length) {
-        if (g[i] <= s[j]) {
-            i++;
+        int i = 0, j = 0;
+        Arrays.sort(g);
+        Arrays.sort(s);
+        while (j < s.length && i < g.length) {
+            if (g[i] <= s[j]) {
+                i++;
+            }
+            j++;
         }
-        j++;
-    }
-    return i;
+        return i;
     }
 
     // 435. 无重叠区间
@@ -2002,6 +2002,64 @@ public class Solution {
             }
         }
         return maxSum;
+    }
+
+    // 763. 划分字母区间
+    public List<Integer> partitionLabels(String s) {
+        int[] lastIndexOfChar = new int[26];
+        for (int i = 0; i < s.length(); i++) {
+            lastIndexOfChar[s.charAt(i) - 'a'] = i;
+        }
+        List<Integer> partitions = new ArrayList<>();
+        int lastIndex = 0;
+        int lastEnd = -1;
+        for (int i = 0; i < s.length(); i++) {
+            if (lastIndexOfChar[s.charAt(i) - 'a'] > lastIndex) {
+                lastIndex = lastIndexOfChar[s.charAt(i) - 'a'];
+            }
+            if (i == lastIndex) {
+                partitions.add(i - lastEnd);
+                lastEnd = i;
+            }
+        }
+        return partitions;
+    }
+
+    /**
+     * 排序
+     */
+    // 二分查找
+    public int binarySearch(int[] nums, int key) {
+        int lo = 0, hi = nums.length - 1;
+        while (lo <= hi) {
+            int mid = lo + (hi - lo) / 2;
+            if (nums[mid] == key) {
+                return mid;
+            } else if (nums[mid] < key) {
+                lo = mid + 1;
+            } else {
+                hi = mid - 1;
+            }
+        }
+        return -1;   
+    }
+
+    // 69. x的平方根
+    public int mySqrt(int x) {
+        if (x < 2) return x;
+        int lo = 1, hi = x / 2;
+        while (lo <= hi) {
+            int mid = lo + (hi - lo) / 2;
+            int sqrt = x / mid;
+            if (sqrt == mid) {
+                return mid;
+            } else if (sqrt > mid) {
+                lo = mid + 1;
+            } else {
+                hi = mid - 1;
+            }
+        } 
+        return hi;
     }
 }
 

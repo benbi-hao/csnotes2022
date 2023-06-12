@@ -2061,6 +2061,20 @@ public class Solution {
         } 
         return hi;
     }
+
+    // 744. 寻找比目标字母大的最小字母
+    public char nextGreatestLetter(char[] letters, char target) {
+        int lo = 0, hi = letters.length;
+        while (lo < hi) {
+            int mid = lo + (hi - lo) / 2;
+            if (letters[mid] <= target) {
+                lo = mid + 1;
+            } else {
+                hi = mid;
+            }
+        }
+        return hi >= letters.length ? letters[0] : letters[hi];
+    }
 }
 
 

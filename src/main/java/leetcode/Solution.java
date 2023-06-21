@@ -2131,8 +2131,45 @@ public class Solution {
 
     private boolean isBadVersion(int version) {
         return false;
+    } 
+
+    // 153. 寻找旋转排序数组中的最小值
+    public int findMin(int[] nums) {
+        int lo = 0, hi = nums.length - 1;
+        while (lo < hi) {
+            int mid = lo + (hi - lo) / 2;
+            if (nums[mid] <= nums[hi]) {
+                hi = mid;
+            } else {
+                lo = mid + 1;
+            }
+        }
+        return nums[hi];
     }
     
+    // 34. 在排序数组中查找元素的第一个和最后一个位置
+    public int[] searchRange(int[] nums, int target) {
+        int firstPos = findFirst(nums, target);
+        if (firstPos == nums.length || nums[firstPos] != target) {
+            return new int[]{-1, -1};
+        }
+        int lastPos = findFirst(nums, target + 1) - 1;
+        return new int[]{firstPos, lastPos};
+    
+    }
+
+    private int findFirst(int[] nums, int target) {
+        int lo = 0, hi = nums.length;
+        while (lo < hi) {
+            int mid = lo + (hi - lo) / 2;
+            if (nums[mid] < target) {
+                lo = mid + 1;
+            } else {
+                hi = mid;
+            }
+        }
+        return hi;
+    }
 }
 
 

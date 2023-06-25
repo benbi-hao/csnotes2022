@@ -2170,6 +2170,107 @@ public class Solution {
         }
         return hi;
     }
+
+    /**
+     * 分治
+     */
+    // 241. 为运算表达式设计优先级
+    public List<Integer> diffWaysToCompute(String expression) {
+        List<Integer> ret = new ArrayList<>();
+        int len = expression.length();
+        for (int i = 0; i < len; i++) {
+            char c = expression.charAt(i);
+            if (c == '+' || c == '-' || c == '*') {
+                List<Integer> left = diffWaysToCompute(expression.substring(0, i));
+                List<Integer> right = diffWaysToCompute(expression.substring(i + 1));
+                for (int leftOp : left) {
+                    for (int rightOp : right) {
+                        switch (c) {
+                            case '+': ret.add(leftOp + rightOp); break;
+                            case '-': ret.add(leftOp - rightOp); break;
+                            case '*': ret.add(leftOp * rightOp); break;
+                        }
+                    }
+                }
+            }
+        }
+        if (ret.size() == 0) {
+            ret.add(Integer.parseInt(expression));
+        }
+        return ret;
+    }
+
+    // 95. 不同的二叉搜索树
+    public List<TreeNode> generateTrees(int n) {
+        return generateTrees(1, n);
+    }
+
+    private List<TreeNode> generateTrees(int lo, int hi) {
+        List<TreeNode> ret = new ArrayList<>();
+        for (int i = lo; i <= hi; i++) {
+            List<TreeNode> left = generateTrees(lo, i - 1);
+            List<TreeNode> right = generateTrees(i + 1, hi);
+            for (TreeNode leftSub : left) {
+                for (TreeNode rightSub : right) {
+                    ret.add(new TreeNode(i, leftSub, rightSub));
+                }
+            }
+        }
+        if (ret.size() == 0) {
+            ret.add(null);
+        }
+        return ret;
+    }
+
+    /**
+     * 动态规划
+     */
+    // 斐波那契数列
+    // 70. 爬楼梯
+    public int climbStairs(int n) {
+        if (n == 1) return 1;
+        int prev2 = 1, prev1 = 1;
+        int curr = 0;
+        for (int i = 2; i <= n; i++) {
+            curr = prev2 + prev1;
+            prev2 = prev1;
+            prev1 = curr;
+        }
+        return curr;
+    }
+
+    // 198. 打家劫舍
+    public int rob(int[] nums) {
+        int prev2 = 0, prev1 = 0;
+        int curr = 0;
+        for (int i = 1; i < nums.length; i++) {
+            curr = Math.max(prev2 + nums[i], prev1);
+            prev2 = prev1;
+            prev1 = curr;
+        }
+        return curr;
+    }
+
+    // 213. 打家劫舍2
+    public int rob2(int[] nums) {
+        if (nums.length == 1) return nums[0];
+        int prev2 = 0, prev1 = 0;
+        int currWithFirst = 0, currWithLast = 0;
+        for (int i = 0; i < nums.length - 1; i++) {
+            currWithFirst = Math.max(prev2 + nums[i], prev1);
+            prev2 = prev1;
+            prev1 = currWithFirst;
+        }
+        prev2 = 0; prev1 = 0;
+        for (int i = 1; i < nums.length; i++) {
+            currWithLast = Math.max(prev2 + nums[i], prev1);
+            prev2 = prev1;
+            prev1 = currWithLast;
+        }
+        return Math.max(currWithFirst, currWithLast);
+    }
+
+    
 }
 
 

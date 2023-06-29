@@ -2270,6 +2270,52 @@ public class Solution {
         return Math.max(currWithFirst, currWithLast);
     }
 
+    // 信件错排
+    
+    // 母牛生产
+
+    // 矩阵路径
+    // 64. 最小路径和
+    public int minPathSum(int[][] grid) {
+        int m = grid.length, n = grid[0].length;
+        int[] dp = new int[n];
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (j == 0) {
+                    dp[j] = dp[j] + grid[i][j];
+                } else {
+                    if (i == 0) {
+                        dp[j] = dp[j - 1] + grid[i][j];
+                    } else {
+                        dp[j] = Math.min(dp[j - 1], dp[j]) + grid[i][j];
+                    }
+                }
+            }
+        }
+        return dp[n - 1];
+    }
+
+    // 62. 不同路径
+    public int uniquePaths(int m, int n) {
+        int[] dp = new int[n];
+        Arrays.fill(dp, 1);
+        for (int i = 1; i < m; i++) {
+            for (int j = 1; j < n; j++) {
+                dp[j] = dp[j - 1] + dp[j];
+            }
+        }
+        return dp[n - 1];
+    }
+
+    // 数组区间
+    // 303. 区域和检索-数组不可变
+    // 详见 leetcode.ds.NumArray
+
+    // 413. 等差数列划分
+    public int numberOfArithmeticSlices(int[] nums) {
+        
+    }
+
     
 }
 

@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 import leetcode.Solution;
 
 public class Main {
@@ -5,8 +7,11 @@ public class Main {
         // int[] array = new int[]{1, 0, 2, 3, 4};
         // int ret = new Solution().maxChunksToSorted(array);
         // System.out.println(ret);
-        int[][] intervals = {{1, 2}, {2, 3}, {3, 4}, {1, 3}};
-        new Solution().eraseOverlapIntervals(intervals);
+        int[] dp = new int[3];
+        Arrays.fill(dp, 1);
+        for (int i = 0; i < dp.length; i++) {
+            System.out.println(dp[i]);
+        }
 
     }
 }

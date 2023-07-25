@@ -2670,4 +2670,155 @@ public class Solution {
         return dp[m][n];
     }
 
+    // 0-1背包
+    // 经典0-1背包
+    public int knapsack(int W, int N, int[] weights, int[] values) {
+        int[][] dp = new int[N + 1][W + 1];
+        for (int i = 1; i <= N; i++) {
+            int w = weights[i - 1], v = values[i - 1];
+            for (int j = 1; j <= W; j++) {
+                if (j >= w) {
+                    dp[i][j] = Math.max(dp[i - 1][j], dp[i - 1][j - w] + v);
+                } else {
+                    dp[i][j] = dp[i - 1][j];
+                }
+            }
+        }
+        return dp[N][W];
+    }
+
+    // 空间优化
+    // 防止dp[i][j-w]覆盖dp[i-1][j-w]，倒序求解
+    public int knapsack1D(int W, int N, int[] weights, int[] values) {
+        int[] dp = new int[W + 1];
+        for (int i = 1; i <= N; i++) {
+            int w = weights[i - 1], v = values[i - 1];
+            for (int j = W; j >= 1; j--) {
+                if (j >= w) {
+                    dp[j] = Math.max(dp[j], dp[j - w] + v);
+                }
+            }
+        }
+        return dp[W];
+    }
+
+    // 416. 分割等和子集
+    public boolean canPartition(int[] nums) {
+        int sum = 0;
+        for (int num : nums) {
+            sum += num;
+        }
+        if (sum % 2 == 1) {
+            return false;
+        }
+        sum /= 2;
+        boolean[] dp = new boolean[sum + 1];
+        dp[0] = true;
+        for (int num : nums) {
+            for (int j = sum; j >= 1; j--) {
+                if (j >= num) {
+                    dp[j] = dp[j] || dp[j - num];
+                }
+            }
+        }
+        return dp[sum];
+    }
+
+    // 494. 目标和
+    public int findTargetSumWays(int[] nums, int target) {
+        int sum = 0;
+        for (int num : nums) {
+            sum += num;
+        }
+        if (sum + target < 0) return 0;
+        if ((sum + target) % 2 == 1) return 0;
+        int W = (sum + target) / 2;
+        int[] dp = new int[W + 1];
+        dp[0] = 1;
+        for (int num : nums) {
+            for (int j = W; j >= num; j--) {
+                dp[j] += dp[j - num];
+            }
+        }
+        return dp[W];
+    }
+
+    // DFS解法
+    public int findTargetSumWaysDFS(int[] nums, int S) {
+        return findTargetSumWaysDFS(nums, 0, S);
+    }
+    
+    private int findTargetSumWaysDFS(int[] nums, int start, int S) {
+        if (start == nums.length) {
+            return S == 0 ? 1 : 0;
+        }
+        return findTargetSumWaysDFS(nums, start + 1, S + nums[start])
+                + findTargetSumWaysDFS(nums, start + 1, S - nums[start]);
+    }
+
+    // 474. 一和零
+    public int findMaxForm(String[] strs, int m, int n) {
+        int[][] dp = new int[m + 1][n + 1];
+        for (String str : strs) {
+            int len = str.length();
+            int zeroCnt = 0, oneCnt = 0;
+            for (int i = 0; i < len; i++) {
+                if (str.charAt(i) == '0') {
+                    zeroCnt += 1;
+                }
+            }
+            oneCnt = len - zeroCnt;
+            for (int i = m; i >= zeroCnt; i--) {
+                for (int j = n; j >= oneCnt; j--) {
+                    dp[i][j] = Math.max(dp[i][j], dp[i - zeroCnt][j - oneCnt] + 1);
+                }
+            }
+        }
+        return dp[m][n];
+    }
+
+    // 322. 找零钱的最少硬币数
+    public int coinChange(int[] coins, int amount) {
+        if (amount == 0) return 0;
+        int[] dp = new int[amount + 1];
+        for (int coin : coins) {
+            for (int i = coin; i <= amount; i++) {
+                if (i == coin) {
+                    dp[i] = 1;
+                } else if (dp[i] == 0 && dp[i - coin] != 0) {
+                    dp[i] = dp[i - coin] + 1;
+                } else if (dp[i - coin] != 0) {
+                    dp[i] = Math.min(dp[i], dp[i - coin] + 1);
+                }
+            }
+        }
+        return dp[amount] == 0 ? -1 : dp[amount];
+    }
+
+    // 2020年的精悍写法
+    public int coinChange2020(int[] coins, int amount) {
+        int[] dp = new int[amount + 1];
+        Arrays.fill(dp, amount + 1);
+        dp[0] = 0;
+
+        for (int coin : coins) {
+            for (int i = coin; i <= amount; i++) {
+                dp[i] = Math.min(dp[i], dp[i - coin] + 1);
+            }
+        }
+
+        return dp[amount] == amount + 1 ? -1 : dp[amount];
+    }
+
+    // 518. 找零钱的硬币数组合
+    public int change(int amount, int[] coins) {
+        int[] dp = new int[amount + 1];
+        dp[0] = 1;
+        for (int coin : coins) {
+            for (int i = coin; i <= amount; i++) {
+                dp[i] += dp[i - coin];
+            }
+        }
+        return dp[amount];
+    }
 }

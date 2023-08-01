@@ -2821,4 +2821,71 @@ public class Solution {
         }
         return dp[amount];
     }
+
+    // 139. 字符串按单词列表分割
+    public boolean wordBreak(String s, List<String> wordDict) {
+        int n = s.length();
+        boolean[] dp = new boolean[n + 1];
+        dp[0] = true;
+        for (int i = 1; i <= n; i++) {
+            for (String word : wordDict) {
+                int len = word.length();
+                if (i >= len && word.equals(s.substring(i - len, i))) {
+                    dp[i] = dp[i] || dp[i - len];
+                }                
+            }
+        }
+        return dp[n];
+    }
+
+    // 377. 组合总和
+    public int combinationSum4(int[] nums, int target) {
+        int[] dp = new int[target + 1];
+        dp[0] = 1;
+        for (int i = 1; i <= target; i++) {
+            for (int num : nums) {
+                if (i >= num) {
+                    dp[i] += dp[i - num];
+                }
+            }
+        }
+        return dp[target];
+    }
+
+    // 股票交易
+    // 309. 需要冷却期的股票交易
+    public int maxProfitCooldown(int[] prices) {
+        int n = prices.length;
+        int[] buy = new int[n];
+        int[] holdPos = new int[n];
+        int[] sell = new int[n];
+        int[] shortPos = new int[n];
+        holdPos[0] = buy[0] = -prices[0];
+        sell[0] = shortPos[0] = 0;
+        for (int i = 1; i < n; i++) {
+            buy[i] = shortPos[i - 1] - prices[i];
+            holdPos[i] = Math.max(holdPos[i - 1], buy[i - 1]);
+            sell[i] = Math.max(holdPos[i - 1], buy[i - 1]) + prices[i];
+            shortPos[i] = Math.max(shortPos[i - 1], sell[i - 1]);
+        }
+        return Math.max(sell[n - 1], shortPos[n - 1]);
+    }
+
+    // 714. 需要交易费用的股票交易
+    public int maxProfitFee(int[] prices, int fee) {
+        int n = prices.length;
+        int[] buy = new int[n];
+        int[] holdPos = new int[n];
+        int[] sell = new int[n];
+        int[] shortPos = new int[n];
+        holdPos[0] = buy[0] = -prices[0];
+        sell[0] = shortPos[0] = 0;
+        for (int i = 1; i < n; i++) {
+            buy[i] = Math.max(shortPos[i - 1], sell[i - 1]) - prices[i];
+            holdPos[i] = Math.max(holdPos[i - 1], buy[i - 1]);
+            sell[i] = Math.max(holdPos[i - 1], buy[i - 1]) + prices[i] - fee;
+            shortPos[i] = Math.max(shortPos[i - 1], sell[i - 1]);
+        }
+        return Math.max(sell[n - 1], shortPos[n - 1]);
+    }
 }

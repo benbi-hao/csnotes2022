@@ -2888,4 +2888,132 @@ public class Solution {
         }
         return Math.max(sell[n - 1], shortPos[n - 1]);
     }
+
+    // 123. 只能进行两次的股票交易
+    public int maxProfitTwice(int[] prices) {
+        int firstBuy = Integer.MIN_VALUE, firstSell = 0;
+        int secondBuy = Integer.MIN_VALUE, secondSell = 0;
+        for (int price : prices) {
+            firstBuy = Math.max(firstBuy, -price);
+            firstSell = Math.max(firstSell, firstBuy + price);
+            secondBuy = Math.max(secondBuy, firstSell - price);
+            secondSell = Math.max(secondSell, secondBuy + price);
+        }
+        return secondSell;
+    }
+
+    // 188. 只能进行k次的股票交易
+    public int maxProfitKTimes(int k, int[] prices) {
+        int[] buy = new int[k + 1];
+        int[] sell = new int[k + 1];
+        Arrays.fill(buy, Integer.MIN_VALUE);
+        for (int price : prices) {
+            for (int i = 1; i <= k; i++) {
+                buy[i] = Math.max(buy[i], sell[i - 1] - price);
+                sell[i] = Math.max(sell[i], buy[i] + price);
+            }
+        }
+        return sell[k];
+    }
+
+    // 字符串编辑
+    // 583. 删除两个字符串的字符使它们相等
+    public int minDistance(String word1, String word2) {
+        int m = word1.length();
+        int n = word2.length();
+        int[][] dp = new int[m + 1][n + 1];
+        for (int i = 1; i <= m; i++) {
+            dp[i][0] = i;
+        }
+        for (int j = 1; j <= n; j++) {
+            dp[0][j] = j;
+        }
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                if (word1.charAt(i - 1) == word2.charAt(j - 1)) {
+                    dp[i][j] = dp[i - 1][j - 1];
+                } else {
+                    dp[i][j] = Math.min(dp[i - 1][j], dp[i][j - 1]) + 1;
+                }
+            }
+        }
+        return dp[m][n];
+    }
+
+    // 转换为最长公共子序列问题
+    public int minDistanceTransfer(String word1, String word2) {
+        int m = word1.length();
+        int n = word2.length();
+        int[][] dp = new int[m + 1][n + 1];
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                if (word1.charAt(i - 1) == word2.charAt(j - 1)) {
+                    dp[i][j] = dp[i - 1][j - 1] + 1;
+                } else {
+                    dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+                }
+            }
+        }
+        return m + n - 2 * dp[m][n];
+    }
+
+    // 72. 编辑距离
+    public int minDistanceUpdate(String word1, String word2) {
+        int m = word1.length(), n = word2.length();
+        int[][] dp = new int[m + 1][n + 1];
+        for (int i = 1; i <= m; i++) {
+            dp[i][0] = i;
+        }
+        for (int j = 1; j <= n; j++) {
+            dp[0][j] = j;
+        }
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                if (word1.charAt(i - 1) == word2.charAt(j - 1)) {
+                    dp[i][j] = dp[i - 1][j - 1];
+                } else {
+                    dp[i][j] = Math.min(dp[i - 1][j - 1], Math.min(dp[i][j - 1], dp[i - 1][j])) + 1;
+                }
+            }
+        }
+        return dp[m][n];
+    }
+
+    // 650. 复制粘贴字符
+    public int minSteps(int n) {
+        int[] dp = new int[n + 1];
+        Arrays.fill(dp, Integer.MAX_VALUE);
+        dp[1] = 0;
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; i + i * j <= n; j++) {
+                int t = i + i * j;
+                dp[t] = Math.min(dp[t], dp[i] + j + 1);
+            }
+        }
+        return dp[n];
+    }
+
+    // 递归
+    public int minStepsRecur(int n) {
+        if (n == 1) return 0;
+        for (int i = 2; i <= Math.sqrt(n); i++) {
+            if (n % i == 0) return i + minSteps(n / i);
+        }
+        return n;
+    }
+
+    // 更优写法
+    public int minStepsBetter(int n) {
+        int[] dp = new int[n + 1];
+        for (int i = 2; i <= n; i++) {
+            dp[i] = Integer.MAX_VALUE;
+            for (int j = 1; j * j <= i; j++) {
+                if (i % j == 0) {
+                    dp[i] = Math.min(dp[i], dp[j] + i / j);
+                    dp[i] = Math.min(dp[i], dp[i / j] + j);
+                }
+            }
+        }
+        return dp[n];
+    }
 }

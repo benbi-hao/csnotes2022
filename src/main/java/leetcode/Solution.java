@@ -3319,6 +3319,194 @@ public class Solution {
     // 51. N皇后
     // 略
 
-
+    /**
+     * 数学
+     */
+    // 204. 生成素数序列
+    public int countPrimes(int n) {
+        boolean[] notPrimes = new boolean[n + 1];
+        int count = 0;
+        for (int i = 2; i < n; i++) {
+            if (notPrimes[i]) {
+                continue;
+            }
+            count++;
+            for (long j = (long)(i) * i; j < n; j += i) {
+                notPrimes[(int) j] = true;
+            }
+        }
+        return count;
+    }
     
+    // 最大公约数和最小公倍数
+    // 最大公约数
+    public int gcd(int a, int b) {
+        return b == 0 ? a : gcd(b, a % b);
+    }
+
+    // 最小公倍数
+    public int lcm(int a, int b) {
+        return a * b / gcd(a, b);
+    }
+
+    // 进制转换
+    // 504. 7进制
+    public String convertToBase7(int num) {
+        if (num == 0) {
+            return "0";
+        }
+        StringBuilder sb = new StringBuilder();
+        boolean isNegative = num < 0;
+        if (isNegative) {
+            num = -num;
+        }
+        while (num > 0) {
+            sb.append(num % 7);
+            num /= 7;
+        }
+        String ret = sb.reverse().toString();
+        return isNegative ? "-" + ret : ret;
+    }
+
+    public String convertToBase7Raw(int num) {
+        return Integer.toString(num, 7);
+    }
+    
+    // 405. 16进制
+    public String toHex(int num) {
+        char[] map = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
+        if (num == 0) return "0";
+        StringBuilder sb = new StringBuilder();
+        while (num != 0) {
+            sb.append(map[num & 0b1111]);
+            num >>>= 4;
+        }
+        return sb.reverse().toString()
+;    }
+
+    // 168. 26进制
+    public String convertToTitle(int n) {
+        if (n == 0) {
+            return "";
+        }
+        n--;
+        return convertToTitle(n / 26) + (char) (n % 26 + 'A');
+    }
+
+    // 阶乘
+    // 172. 统计阶乘尾部有多少个0
+    public int trailingZeroes(int n) {
+        return n == 0 ? 0 : n / 5 + trailingZeroes(n / 5);
+    }
+
+    // 字符串加法减法
+    // 67. 二进制加法
+    public String addBinary(String a, String b) {
+        int i = a.length() - 1, j = b.length() - 1, carry = 0;
+        StringBuilder str = new StringBuilder();
+        while (carry == 1 || i >= 0 || j >= 0) {
+            if (i >= 0 && a.charAt(i--) == '1') {
+                carry++;
+            }
+            if (j >= 0 && b.charAt(j--) == '1') {
+                carry++;
+            }
+            str.append(carry % 2);
+            carry /= 2;
+        }
+        return str.reverse().toString();
+    }
+
+    // 415. 字符串加法
+    public String addStrings(String num1, String num2) {
+        StringBuilder str = new StringBuilder();
+        int carry = 0, i = num1.length() - 1, j = num2.length() - 1;
+        while (carry == 1 || i >= 0 || j >= 0) {
+            int x = i < 0 ? 0 : num1.charAt(i--) - '0';
+            int y = j < 0 ? 0 : num2.charAt(j--) - '0';
+            str.append((x + y + carry) % 10);
+            carry = (x + y + carry) / 10;
+        }
+        return str.reverse().toString();
+    }
+
+    // 相遇问题
+    // 462. 改变数组元素使所有的数组元素都相等
+    // 排序或用快速选择找到中位数
+
+    // 多数投票问题
+    // 169. 数组中出现次数多于n/2的元素
+    public int majorityElement(int[] nums) {
+        Arrays.sort(nums);
+        return nums[nums.length / 2];
+    }
+
+    // Boyer-Moore Majority Vote
+    public int majorityElementMV(int[] nums) {
+        int cnt = 0, majority = nums[0];
+        for (int num : nums) {
+            majority = (cnt == 0) ? num : majority;
+            cnt = (majority == num) ? cnt + 1 : cnt - 1;
+        }
+        return majority;
+    }
+
+    // 其他
+    // 367. 平方数
+    public boolean isPerfectSquare(int num) {
+        int subNum = 1;
+        while (num > 0) {
+            num -= subNum;
+            subNum += 2;
+        }
+        return num == 0;
+    }
+
+    // 3的n次方
+    public boolean isPowerOfThree(int n) {
+        return n > 0 && (1162261467 % n == 0);
+    }
+
+    // 238. 乘积数组
+    public int[] productExceptSelf(int[] nums) {
+        int n = nums.length;
+        int[] products = new int[n];
+        Arrays.fill(products, 1);
+        int left = 1;
+        for (int i = 1; i < n; i++) {
+            left *= nums[i - 1];
+            products[i] *= left;
+        }
+        int right = 1;
+        for (int i = n - 2; i >= 0; i--) {
+            right *= nums[i + 1];
+            products[i] *= right;
+        }
+        return products;
+    }
+
+    // 628. 找出数组中的乘积最大的三个数
+    public int maximumProduct(int[] nums) {
+        int max1 = Integer.MIN_VALUE, max2 = Integer.MIN_VALUE, max3 = Integer.MIN_VALUE, min1 = Integer.MAX_VALUE, min2 = Integer.MAX_VALUE;
+        for (int n : nums) {
+            if (n > max1) {
+                max3 = max2;
+                max2 = max1;
+                max1 = n;
+            } else if (n > max2) {
+                max3 = max2;
+                max2 = n;
+            } else if (n > max3) {
+                max3 = n;
+            }
+    
+            if (n < min1) {
+                min2 = min1;
+                min1 = n;
+            } else if (n < min2) {
+                min2 = n;
+            }
+        }
+        return Math.max(max1*max2*max3, max1*min1*min2);
+    }
 }

@@ -3016,4 +3016,309 @@ public class Solution {
         }
         return dp[n];
     }
+
+    /**
+     * 搜索
+     */
+    // BFS
+    // 1091. 计算在网格中从原点到特定点的最短路径长度
+    public int shortestPathBinaryMatrix(int[][] grids) {
+        if (grids[0][0] == 1) return -1;
+        int n = grids.length;
+        int[][] direction = {{-1, -1}, {0, -1}, {1, -1}, {1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}};
+        boolean[][] visited = new boolean[n][n];
+        int[][] depth = new int[n][n];
+        Queue<int[]> queue = new LinkedList<>();
+        queue.offer(new int[]{0, 0});
+        visited[0][0] = true;
+        int currDepth = 0;
+        while (!queue.isEmpty()) {
+            currDepth++;
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                int[] curr = queue.poll();
+                int x = curr[0], y = curr[1];
+                depth[x][y] = currDepth;
+                for (int[] d : direction) {
+                    int tx = x + d[0], ty = y + d[1];
+                    if (tx < 0 || tx >= n || ty < 0 || ty >= n) continue;
+                    if (grids[tx][ty] == 1) continue;
+                    if (visited[tx][ty]) continue;
+                    queue.offer(new int[]{tx, ty});
+                    visited[tx][ty] = true;
+                }
+            }
+        }
+        return depth[n - 1][n - 1] == 0 ? -1 : depth[n - 1][n - 1];
+    }
+    
+    // 更普遍的BFS写法（为了普遍性用了visited数组，用了currDepth，用了depth数组）
+    public int shortestPathBinaryMatrixGeneral(int[][] grids) {
+        if (grids[0][0] == 1) {
+            return -1;
+        }
+        int[][] direction = {{-1, -1}, {0, -1}, {1, -1}, {1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}};
+        int n = grids.length;
+        int[][] depth = new int[n][n];
+        boolean[][] visited = new boolean[n][n];
+        Queue<int[]> queue = new LinkedList<>();
+
+
+        queue.offer(new int[]{0, 0});
+        visited[0][0] = true;
+        depth[0][0] = 1;
+
+        int currDepth = 1;
+        while (!queue.isEmpty()) {
+            int[] curr = queue.poll();
+            int x = curr[0], y = curr[1];
+            depth[x][y] = currDepth;
+            if (x == n - 1 && y == n - 1) {
+                return currDepth;
+            }
+            for (int[] d : direction) {
+                int tx = x + d[0], ty = y + d[1];
+                if (tx < 0 || tx >= n || ty < 0 || ty >= n) continue;
+                if (grids[tx][ty] == 1 || visited[tx][ty]) continue;
+
+                queue.offer(new int[]{tx, ty});
+                visited[tx][ty] = true;
+                depth[x][y] = currDepth + 1;
+            }
+            currDepth++;
+        }
+        return -1;
+    }
+    
+    // 更好的题目写法（不用depth数组，不用visited数组）
+    public int shortestPathBinaryMatrixBetter(int[][] grids) {
+        if (grids[0][0] == 1) return -1;
+        int[][] direction = {{-1, -1}, {0, -1}, {1, -1}, {1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}};
+        int n = grids.length;
+        Queue<int[]> queue = new LinkedList<>();
+        
+        queue.offer(new int[]{0, 0});
+        grids[0][0] = 1;
+        int currDepth = 0;
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            currDepth++;
+            for (int i = 0; i < size; i++) {
+                int[] curr = queue.poll();
+                int x = curr[0], y = curr[1];
+                if (x == n - 1 && y == n - 1) {
+                    return currDepth;
+                }
+                for (int[] d : direction) {
+                    int nx = x + d[0], ny = y + d[1];
+                    if (nx < 0 || nx >= n || ny < 0 || ny >= n) continue;
+                    if (grids[nx][ny] == 1) continue;
+
+                    queue.offer(new int[]{nx, ny});
+                    grids[nx][ny] = 1;
+                }
+            }
+        }
+        return -1;
+    }
+
+    // 279. 组成整数的最小平方数数量
+
+
+    // 127. 最短单词路径
+
+
+    // DFS
+    // 695. 查找最大的连通面积
+    public int maxAreaOfIsland(int[][] grid) {
+        int m = grid.length, n = grid[0].length;
+        maxAreaOfIslandVisited = new boolean[m][n];
+        int maxArea = 0;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                maxArea = Math.max(maxArea, maxAreaOfIslandDfs(grid, i, j));
+            }
+        }
+        return maxArea;
+    }
+
+    private int[][] maxAreaOfIslandDirection = new int[][]{{0, -1}, {-1, 0}, {0, 1}, {1, 0}};
+    private boolean[][] maxAreaOfIslandVisited = null;
+
+    private int maxAreaOfIslandDfs(int[][] grid, int x, int y) {
+        if (x < 0 || x >= grid.length || y < 0 || y >= grid[0].length) return 0;
+        if (grid[x][y] == 0) return 0;
+        if (maxAreaOfIslandVisited[x][y]) return 0;
+        maxAreaOfIslandVisited[x][y] = true;
+        int area = 1;
+        for (int[] d : maxAreaOfIslandDirection) {
+            int nx = x + d[0], ny = y + d[1];
+            area += maxAreaOfIslandDfs(grid, nx, ny);
+        }
+        return area;
+    }
+
+    // 200. 矩阵中的连通分量数目
+
+
+    // 547. 好友关系的连通分量数目
+
+
+    // 130. 填充封闭区域
+
+
+    // 417. 能到达的太平洋和大西洋的区域
+
+
+    // Backtracking（回溯）
+    // 17. 数字键盘组合
+    private String[] letterCombinationKeys = {"", "", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
+
+    public List<String> letterCombination(String digits) {
+        List<String> combinations = new ArrayList<>();
+        letterCombinationBacktracking(new StringBuilder(), combinations, digits);
+        return combinations;
+        
+    }
+
+    private void letterCombinationBacktracking(StringBuilder prefix, List<String> combinations, String digits) {
+        if (prefix.length() == digits.length()) {
+            combinations.add(prefix.toString());
+            return;
+        }
+        char currDigit = digits.charAt(prefix.length());
+        String letters = letterCombinationKeys[currDigit - '0'];
+        int len = letters.length();
+        for (int i = 0; i < len; i++) {
+            char c = letters.charAt(i);
+            prefix.append(c);
+            letterCombinationBacktracking(prefix, combinations, digits);
+            prefix.deleteCharAt(prefix.length() - 1);
+        }
+    }
+
+    // 93. IP地址划分
+
+
+    // 79. 在矩阵中寻找字符串
+    private int[][] existDirection = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
+
+    public boolean exist(char[][] board, String word) {
+        int m = board.length, n = board[0].length;
+        boolean[][] visited = new boolean[m][n];
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (existBacktracking(0, i, j, visited, board, word)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean existBacktracking(int k, int x, int y, boolean[][] visited, char[][] board, String word) {
+        if (k == word.length()) {
+            return true;
+        }
+        if (x < 0 || x >= board.length || y < 0 || y >= board[0].length || visited[x][y]) {
+            return false;
+        }
+        if (board[x][y] != word.charAt(k)) {
+            return false;
+        }
+        visited[x][y] = true;
+        for (int[] d : existDirection) {
+            if (existBacktracking(k + 1, x + d[0], y + d[1], visited, board, word)) {
+                return true;
+            }
+        }
+        visited[x][y] = false;
+        return false;
+    }
+
+    // 257.输出二叉树中所有从根到叶子的路径
+
+
+    // 46. 排列
+    public List<List<Integer>> permute(int[] nums) {
+        List<List<Integer>> permutes = new ArrayList<>();
+        boolean[] visited = new boolean[nums.length];
+        permuteBacktracking(new ArrayList<>(), permutes, visited, nums);
+        return permutes;
+    }
+
+    public void permuteBacktracking(List<Integer> prefix, List<List<Integer>> permutes, boolean[] visited, int[] nums) {
+        if (prefix.size() == nums.length) {
+            permutes.add(new ArrayList<>(prefix));
+            return;
+        }
+        for (int i = 0; i < nums.length; i++) {
+            if (visited[i]) continue;
+            visited[i] = true;
+            prefix.add(nums[i]);
+            permuteBacktracking(prefix, permutes, visited, nums);
+            prefix.remove(prefix.size() - 1);
+            visited[i] = false;
+        }
+    }
+
+    // 47. 含有相同元素求排列
+    // 相同元素的不同排列算一个，做法是，先将所有元素排序，在添加一个元素时先判断前一个元素是否和这个元素相等，如果相等且前一个元素未访问，就跳过
+
+    // 77. 组合
+    // 一是组合不在乎顺序了，不同顺序算一种，所以引入start，保持前后顺序，这样就不会重复
+    // 二是因为要保持前后顺序所以长度为k的序列不可能从超过n-k+1之后的位置开始
+    // 因为递归一定会start = i + 1，确保了一个元素不会用两次，所以不需要visited
+    public List<List<Integer>> combine(int n, int k) {
+        List<List<Integer>> combines = new ArrayList<>();
+        combineBacktracking(new ArrayList<>(), combines, 1, n, k);
+        return combines;
+    }
+
+    private void combineBacktracking(List<Integer> prefix, List<List<Integer>> combines, int start, int n, int k) {
+        if (k == 0) {
+            combines.add(new ArrayList<>(prefix));
+            return;
+        }
+        for (int i = start; i <= n - k + 1; i++) {
+            prefix.add(i);
+            combineBacktracking(prefix, combines, i + 1, n, k - 1);
+            prefix.remove(prefix.size() - 1);
+        }
+    }
+
+    // 39. 组合求和
+    // 是求组合，所以要用start，每个数字可以随便用，所以递归的时候不用传入start=i+1，只用传入start=i，也不用visited
+
+    // 40. 含有相同元素的组合求和
+    // 是求组合，所以要用start，每个元素只能用一次，所以递归要传start=i+1，因为每个元素只能用一次，所以本来不需要visited
+    // 但是为了不让相同元素重复，需要用visited数组来作条件判断 candidates[i] == candidates[i - 1] && !hasVisited[i - 1] 则跳过
+
+    // 216. 1-9数字的组合求和
+    // 是求组合，所以要用start，每个元素只能用一次，所以递归要传start=i+1，因为每个元素只能用一次，所以不需要visited
+    // 长度为k，所以可以剪枝，长度为k的序列，不可能从9-k+1之后的数字开始
+    // 传入n和k如果都为0，说明找到了，如果只有n为0，说明k不够，直接返回，如果只有k为0，说明和没到，直接返回
+
+    // 78. 子集
+    // 相当于k从0到nums.length都求一次组合
+    // 在函数主体中对k作一次迭代，用start，在递归时传入start = i + 1，不用visited，剪枝
+    
+    // 90. 含有相同元素求子集
+    // 相当于k从0到nums.length都求一次组合
+    // 有重复元素，所以要先排序，且要用visited数组，判断 candidates[i] == candidates[i - 1] && !hasVisited[i - 1] 则跳过
+    // 在函数主体中对k作一次迭代，用start，在递归时传入start = i + 1，不用visited，剪枝
+
+    // 131. 分割字符串使得每个部分都是回文数
+    // 在判断子串是回文串才加入到prefix中
+
+    // 37. 数独
+    // 首先对行列和各都创建每个数字的bool数组，这样就能最快地判断这个行列格哪些数字没被占用
+    // 其次是对网格的回溯，如果是有数字的直接开头就continue，然后对这个网格1-9能下的都试一下
+    // 递归传参数时，不加1，而是在每个递归的开头判断下一个需要下的格子
+
+    // 51. N皇后
+    // 略
+
+
+    
 }

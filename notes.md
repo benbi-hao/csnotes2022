@@ -87,3 +87,12 @@ public long combinationProduct(int n, int m) {
 }
 
 ```
+
+java "." "|" "*" "+" 都是正则表达式转义字符，要加"\\"，如"\\."
+
+
+shell 高级逻辑运算 && 和 || 要加 两个方括号 [[  ]]
+shell 字符串运算符号 -z -n 的操作数 要加双引号 -z "$hello"
+shell = == 都可以用来判断字符串相等和数字相等 -eq 用来判断数字相等
+shell if then then要换行，在if的下一行，elif同理
+shell 计算可以用 expr 也可以用 (())直接写表达式

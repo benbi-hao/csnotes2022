@@ -3198,7 +3198,37 @@ public class Solution {
     }
 
     // 93. IP地址划分
+    public List<String> restoreIpAddresses(String s) {
+        StringBuilder prefix = new StringBuilder();
+        List<String> addresses = new ArrayList<>();
+        restoreIpAddressesBacktracking(prefix, addresses, s, 4);
+        return addresses;
+    }
 
+    private void restoreIpAddressesBacktracking(StringBuilder prefix, List<String> addresses, String s, int k) {
+        if (k == 0) {
+            if (s.length() == 0) {
+                addresses.add(prefix.toString());
+            }
+            return;
+        }
+        int len = prefix.length();
+
+        for (int i = 1; i <= 3 && i <= s.length(); i++) {
+            if (s.charAt(0) != '0' || i == 1) {
+                String sub = s.substring(0, i);
+                if (Integer.valueOf(sub) > 255) {
+                    continue;
+                }
+                if (k < 4) {
+                    prefix.append('.');
+                }
+                prefix.append(sub);
+                restoreIpAddressesBacktracking(prefix, addresses, s.substring(i), k - 1);
+                prefix.delete(len, prefix.length());
+            }
+        }
+    }
 
     // 79. 在矩阵中寻找字符串
     private int[][] existDirection = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};

@@ -96,3 +96,7 @@ shell 字符串运算符号 -z -n 的操作数 要加双引号 -z "$hello"
 shell = == 都可以用来判断字符串相等和数字相等 -eq 用来判断数字相等
 shell if then then要换行，在if的下一行，elif同理
 shell 计算可以用 expr 也可以用 (())直接写表达式
+
+
+mysql round(a, 2) 保留两位小数
+mysql date_format(d, '%Y-%m-%d %h:%i:%s')

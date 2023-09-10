@@ -1,4 +1,5 @@
-
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Main {
     public static void main(String[] args){
@@ -18,11 +19,13 @@ public class Main {
         // long endTime2 = System.nanoTime();
         // System.out.println(endTime2 - startTime2);
 
-        String[] terms = new String("1.2.3.4.").split("\\.");
-        System.out.println(terms.length);
-        for (String s : terms) {
-            System.out.println(s);
-        }
+        // String[] terms = new String("1.2.3.4.").split("\\.");
+        // System.out.println(terms.length);
+        // for (String s : terms) {
+        //     System.out.println(s);
+        // }
+
+    
     }
 
     // public long combinationAdd(int n, int m) {

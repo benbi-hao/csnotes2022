@@ -2,6 +2,7 @@ package leetcode;
 
 import leetcode.ds.ListNode;
 import leetcode.ds.TreeNode;
+import leetcode.ds.NTreeNode;
 import leetcode.util.UnionFind;
 
 import java.lang.Math;
@@ -83,6 +84,44 @@ public class Solution {
         return sentinel.next;
     }
 
+    // 递归写法
+    public ListNode mergeTwoListsRecur(ListNode list1, ListNode list2) {
+        if (list1 == null) return list2;
+        if (list2 == null) return list1;
+        if (list1.val < list2.val) {
+            list1.next = mergeTwoListsRecur(list1.next, list2);
+            return list1;
+        } else {
+            list2.next = mergeTwoListsRecur(list1, list2.next);
+            return list2;
+        }
+
+
+    // 合并两个有序链表到第一个上
+    public ListNode mergeTwoListsToFirst(ListNode list1, ListNode list2) {
+        ListNode sentinel1 = new ListNode(-101, list1);
+        ListNode sentinel2 = new ListNode(-101, list2);
+        ListNode p1 = sentinel1;
+        while (p1.next != null && sentinel2.next != null) {
+            ListNode p2 = sentinel2;
+            while (p2.next != null && p2.next.val < p1.next.val) {
+                p2 = p2.next;
+            }
+            if (p2 == sentinel2) {
+                p1 = p1.next;
+            } else {
+                ListNode t1 = p1.next, t2 = p2.next;
+                p1.next = sentinel2.next;
+                p2.next = t1;
+                sentinel2.next = t2;
+            }
+        }
+        if (sentinel2.next != null) {
+            p1.next = sentinel2.next;
+        }
+        return sentinel1.next;
+    }
+
     // 83. 删除排序链表中的重复元素
     public ListNode deleteDuplicates(ListNode head) { // 迭代法
         if (head == null)
@@ -124,32 +163,27 @@ public class Solution {
     }
 
     // 24. 两两交换链表中的结点
-    public ListNode swapPairs(ListNode head) { // 递归法
-        if (head == null || head.next == null)
-            return head;
-        head.next.next = swapPairs(head.next.next);
-        ListNode ret = head.next;
-        head.next = ret.next;
-        ret.next = head;
-        return ret;
+    public ListNode swapPairs(ListNode head) {
+        if (head == null || head.next == null) return head;
+        ListNode head2 = head.next, next = head.next.next;
+        head2.next = head;
+        head.next = swapPairs(next);
+        return head2;
     }
 
-    public ListNode swapPairsIter(ListNode head) { // 迭代法
-        if (head == null || head.next == null)
-            return head;
-        ListNode ret = head.next;
-        ListNode curr = head, next = null;
-        while (curr != null && curr.next != null) {
-            next = curr.next.next;
-            curr.next.next = curr;
-            if (next == null || next.next == null) {
-                curr.next = next;
-            } else {
-                curr.next = next.next;
-            }
-            curr = next;
+    // 迭代写法
+    public ListNode swapPairsIter(ListNode head) {
+        ListNode sentinel = new ListNode(-1, head);
+        ListNode pre = sentinel;
+        while (pre.next != null && pre.next.next != null) {
+            ListNode l1 = pre.next, l2 = pre.next.next;
+            l1.next = l2.next;
+            l2.next = l1;
+            pre.next = l2;
+            pre = l1;
         }
-        return ret;
+        return sentinel.next;
+
     }
 
     // 445. 两数相加2
@@ -288,6 +322,37 @@ public class Solution {
     /**
      * 树
      */
+
+
+    // 手撕
+    // 深拷贝一棵树
+    public NTreeNode deepCopyTree(NTreeNode root) {
+        NTreeNode copy = new NTreeNode(root.val, new ArrayList<>());
+        for (NTreeNode child : root.children) {
+            copy.children.add(deepCopyTree(child));
+        }
+        return copy;
+    }
+
+    public NTreeNode deepCopyTreeIter(NTreeNode root) {
+        NTreeNode sentinel = new NTreeNode(-1, new ArrayList<>());
+        Deque<NTreeNode> stackNode = new ArrayDeque<>();
+        Deque<NTreeNode> stackParent = new ArrayDeque<>();
+        stackNode.push(root);
+        stackParent.push(sentinel);
+        while (!stackNode.isEmpty()) {
+            NTreeNode curr = stackNode.pop();
+            NTreeNode parent = stackParent.pop();
+            NTreeNode copy = new NTreeNode(curr.val, new ArrayList<>());
+            parent.children.add(copy);
+            int n = curr.children.size();
+            for (int i = n - 1; i >= 0; i--) {
+                stackNode.push(curr.children.get(i));
+                stackParent.push(copy);
+            }
+        }
+        return sentinel.children.get(0);
+    }
 
     // - 递归
     // 104. 二叉树的最大深度

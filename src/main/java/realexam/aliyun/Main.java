@@ -42,21 +42,21 @@ public class Main {
         int[] cntToParent = pathCount[parent];
         int[] cntToCurr = pathCount[curr];
         int w = weights[curr];
-        handle(w, cntToParent, cntToCurr);
+        handleRecurrence(w, cntToParent, cntToCurr);
         ret += cntToCurr[6];
         cntToCurr[w] += 1;
         int[] cntBackCurr = new int[7];
         for (int child : graph[curr]) {
             if (child == parent) continue;
             int[] cntBackChild = dfs(curr, child);
-            handle(w, cntBackChild, cntBackCurr);
-            handle(w, cntBackChild, cntToCurr);
+            handleRecurrence(w, cntBackChild, cntBackCurr);
+            handleRecurrence(w, cntBackChild, cntToCurr);
         }
         cntBackCurr[w] += 1;
         return cntBackCurr;
     }
 
-    private static void handle(int w, int[] from, int[] curr) {
+    private static void handleRecurrence(int w, int[] from, int[] curr) {
         switch(w) {
             case 1:
                 curr[1] += from[1];

@@ -95,7 +95,7 @@ public class Solution {
             list2.next = mergeTwoListsRecur(list1, list2.next);
             return list2;
         }
-
+    }
 
     // 合并两个有序链表到第一个上
     public ListNode mergeTwoListsToFirst(ListNode list1, ListNode list2) {
@@ -335,23 +335,24 @@ public class Solution {
     }
 
     public NTreeNode deepCopyTreeIter(NTreeNode root) {
-        NTreeNode sentinel = new NTreeNode(-1, new ArrayList<>());
         Deque<NTreeNode> stackNode = new ArrayDeque<>();
         Deque<NTreeNode> stackParent = new ArrayDeque<>();
+        NTreeNode ret = null;
         stackNode.push(root);
-        stackParent.push(sentinel);
+        stackParent.push(null);
         while (!stackNode.isEmpty()) {
             NTreeNode curr = stackNode.pop();
             NTreeNode parent = stackParent.pop();
             NTreeNode copy = new NTreeNode(curr.val, new ArrayList<>());
-            parent.children.add(copy);
+            if (curr == root) ret = copy;
+            else parent.children.add(copy);
             int n = curr.children.size();
             for (int i = n - 1; i >= 0; i--) {
                 stackNode.push(curr.children.get(i));
                 stackParent.push(copy);
             }
         }
-        return sentinel.children.get(0);
+        return ret;
     }
 
     // - 递归

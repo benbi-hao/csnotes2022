@@ -3,8 +3,13 @@ package realexam.tencent;
 import java.util.*;
 
 public class Main {
-    // N次数据，n个数的数组，加上初始状态，每次去除掉一个下标，输出剩下的数组的中位数
+
     public static void main(String[] args) {
+        countOfSamecheckSum();
+    }
+
+    // N次数据，n个数的数组，加上初始状态，每次去除掉一个下标，输出剩下的数组的中位数
+    public static void floatingMedian() {
         Scanner in = new Scanner(System.in);
         int N = in.nextInt();
         for (int iN = 0; iN < N; iN++) {
@@ -77,4 +82,31 @@ public class Main {
             System.out.println(output.toString());
         }
     }
+
+    // 01串，长度为n，子串长度为k，对每个长度为n的01串，所有长度为k子串的异或校验和与自己相等的字符串有多少个
+    public static void countOfSamecheckSum() {
+        Scanner in = new Scanner(System.in);
+        int T = in.nextInt();
+        for (int iT = 0; iT < T; iT++) {
+            int n = in.nextInt();
+            int k = in.nextInt();
+            System.out.println(quickPow(2, n - k) - 1);
+        }
+    }
+
+    private static long MOD = 1000000007;
+
+    private static long mul(long a, long b) {
+        return (a * b) % MOD;
+    }
+
+    private static long quickPow(long a, long n) {
+        if (n == 0) return 1;
+        if (n == 1) return a;
+        long temp = quickPow(a, n >> 1);
+        return (n & 1) == 0 ? mul(temp, temp) : mul(a, mul(temp, temp));
+    }
+
+    
+
 }

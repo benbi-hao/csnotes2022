@@ -1,24 +1,27 @@
 package leetcode.util;
 
 public class UnionFind {
-    private int[] color;
+    private int[] parent;
     
-    public UnionFind(int size) {
-        color = new int[size + 1];
-        for (int i = 1; i <= size; i++) {
-            color[i] = i;
+    public UnionFind(int n) {
+        parent = new int[n];
+        for (int i = 0; i < n; i++) {
+            parent[i] = i;
         }
+    }
+
+    public int find(int u) {
+        if (parent[u] != u) {
+            parent[u] = find(parent[u]);
+        }
+        return parent[u];
     }
 
     public void union(int u, int v) {
-        int colorV = color[v];
-        if (color[u] == colorV) return;
-        for (int i = 1; i < color.length; i++) {
-            if (color[i] == colorV) color[i] = color[u];
-        }
+        parent[find(u)] = find(v);
     }
 
     public boolean isConnected(int u, int v) {
-        return color[u] == color[v];
+        return find(u) == find(v);
     }
 }

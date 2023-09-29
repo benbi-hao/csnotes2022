@@ -3,7 +3,7 @@ package leetcode;
 import leetcode.ds.ListNode;
 import leetcode.ds.TreeNode;
 import leetcode.ds.NTreeNode;
-import leetcode.util.UnionFind;
+import leetcode.util.UnionFindArray;
 
 import java.lang.Math;
 import java.util.*;
@@ -1712,7 +1712,7 @@ public class Solution {
     // 684. 冗余连接
     public int[] findRedundantConnection(int[][] edges) {
         int n = edges.length;
-        UnionFind uf = new UnionFind(n);
+        UnionFindArray uf = new UnionFindArray(n);
         for (int[] edge : edges) {
             if (uf.isConnected(edge[0], edge[1]))
                 return edge;

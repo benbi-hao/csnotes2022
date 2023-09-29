@@ -5,7 +5,7 @@ import java.util.*;
 public class Main {
 
     public static void main(String[] args) {
-        countOfSamecheckSum();
+        minSumAfterDeleteKBits();
     }
 
     // N次数据，n个数的数组，加上初始状态，每次去除掉一个下标，输出剩下的数组的中位数
@@ -107,6 +107,37 @@ public class Main {
         return (n & 1) == 0 ? mul(temp, temp) : mul(a, mul(temp, temp));
     }
 
-    
+    // n个数字，最多进行k次操作，每次选中一个数最后一位1变为0，求k次操作后所有数字和的最小值
+    public static void minSumAfterDeleteKBits() {
+        Scanner in = new Scanner(System.in);
+        int n = in.nextInt();
+        int k = in.nextInt();
+        long[] nums = new long[n + 1];
+        for (int i = 1; i <= n; i++) {
+            nums[i] = in.nextLong();
+        }
+        long[][] dp = new long[n + 1][k + 1];
+        long sum = 0;
+        for (int i = 1; i <= n; i++) {
+            sum += nums[i];
+            long num = nums[i];
+            long deleted = 0;
+            long[] gain = new long[32];
+            int digits = 1;
+            while (num != 0) {
+                deleted += num & -num;
+                num &= num - 1;
+                gain[digits++] = deleted;
+            }
+
+            for (int j = 0; j <= k; j++) {
+                for (int d = 0; d <= digits && d <= j; d++) {
+                    dp[i][j] = Math.max(dp[i][j], dp[i - 1][j - d] + gain[d]);
+                }
+            }
+        }
+
+        System.out.println(sum - dp[n][k]);
+    }
 
 }

@@ -1,6 +1,15 @@
 package leetcode.ds;
 
 public class Trie {
+    private class Node {
+        boolean isLeaf;
+        Node[] children;
+        Node() {
+            isLeaf = false;
+            children = new Node[26];
+        }
+    }
+
     private Node root;
 
     public Trie() {
@@ -51,11 +60,3 @@ public class Trie {
     }
 }
 
-class Node {
-    boolean isLeaf;
-    Node[] children;
-    Node() {
-        isLeaf = false;
-        children = new Node[26];
-    }
-}

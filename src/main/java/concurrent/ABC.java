@@ -8,19 +8,19 @@ import java.util.concurrent.locks.ReentrantLock;
 public class ABC {
     public static void main(String[] args) {
         // 伪自旋
-        rawSpin();
+        // rawSpin();
 
         // CAS + 自旋
-        casSpin();
+        // casSpin();
 
         // synchronized + flag
         syncFlag();
 
         // 信号量
-        rawSemaphore();
+        // rawSemaphore();
 
         // ReentrantLock + Condition + flag
-        relockFlag();
+        // relockFlag();
     }
 
     private static volatile int flag;

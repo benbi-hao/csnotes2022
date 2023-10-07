@@ -1,6 +1,8 @@
 package jzoffer;
 
+import jzoffer.ds.RandomListNode;
 import java.util.*;
+
 
 public class Solution {
     // 59. 滑动窗口的最大值
@@ -25,6 +27,32 @@ public class Solution {
         return ret;
     }
 
-        
+    // 35. 复杂链表的复制
+    private Map<RandomListNode, RandomListNode> cache;
+
+    public RandomListNode Clone(RandomListNode pHead) {
+        cache = new HashMap<>();
+        RandomListNode newHead = sequentialClone(pHead);
+        RandomListNode pOld = pHead, pNew = newHead;
+        while (pOld != null) {
+            if (pOld.random == null) {
+                pNew.random = null;
+            } else {
+                pNew.random = cache.get(pOld.random);
+            }
+            pOld = pOld.next;
+            pNew = pNew.next;
+        }
+        return newHead;
+
+    }
+
+    public RandomListNode sequentialClone(RandomListNode pHead) {
+        if (pHead == null) return null;
+        RandomListNode cloned = new RandomListNode(pHead.label);
+        cloned.next = sequentialClone(pHead.next);
+        cache.put(pHead, cloned);
+        return cloned;
+    }
     
 }

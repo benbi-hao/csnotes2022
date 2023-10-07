@@ -1,5 +1,7 @@
 package classic;
 
+import java.util.Random;
+
 public class Solution {
     // 字符串匹配kmp算法
     public static boolean kmp(String s, String t) {
@@ -86,6 +88,64 @@ public class Solution {
     // 可推出 a * b^(-1) mod p = a * b^(p - 2) mod p
     public static long fractionMod(long a, long b) {
         return mul(a, quickPow(b, MOD - 2));
+    }
+
+    // 快速选择
+    public int quickSelect(int[] nums, int k) {
+        int n = nums.length;
+        int lo = 0, hi = n - 1;
+        while (lo < hi) {
+            int pivotIndex = partition(nums, lo, hi);
+            if (pivotIndex == k) {
+                return nums[k];
+            } else if (pivotIndex < k) {
+                lo = pivotIndex + 1;
+            } else {
+                hi = pivotIndex - 1;
+            }
+        }
+        return nums[k];
+    }
+
+    private int partition(int[] nums, int lo, int hi) {
+        int i = lo, j = hi + 1;
+        while (true) {
+            while (nums[++i] < nums[lo] && i < hi);
+            while (nums[--j] > nums[lo] && j > lo);
+            if (i >= j) break;
+            swap(nums, i, j);
+        }
+        swap(nums, lo, j);
+        return j;
+    }
+
+    private void swap(int[] nums, int i, int j) {
+        int t = nums[i];
+        nums[i] = nums[j];
+        nums[j] = t;
+    }
+
+    // 随机快速选择
+    private Random random;
+    public int randomizedSelect(int[] nums, int k) {
+        int n = nums.length;
+        int lo = 0, hi = n - 1;
+        while (lo < hi) {
+            int pivotIndex = randomizedPartition(nums, lo, hi);
+            if (pivotIndex == k) {
+                return nums[k];
+            } else if (pivotIndex < k) {
+                lo = pivotIndex + 1;
+            } else {
+                hi = pivotIndex - 1;
+            }
+        }
+        return nums[k];
+    }
+    private int randomizedPartition(int[] nums, int lo, int hi) {
+        int r = lo + random.nextInt(hi - lo + 1);
+        swap(nums, r, lo);
+        return partition(nums, lo, hi);
     }
 
     public static void main(String[] args) {

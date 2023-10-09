@@ -2,6 +2,7 @@ package jzoffer;
 
 import jzoffer.ds.RandomListNode;
 import jzoffer.ds.ListNode;
+import jzoffer.ds.TreeNode;
 
 import java.util.*;
 
@@ -95,4 +96,35 @@ public class Solution {
         }
     }
     
+    // 77. 按之字形顺序打印二叉树
+    public ArrayList<ArrayList<Integer>> Print (TreeNode pRoot) {
+        ArrayList<ArrayList<Integer>> ret = new ArrayList<>();
+        if (pRoot == null) return ret;
+        Deque<TreeNode> deque = new ArrayDeque<>();
+        boolean flag = true;
+        deque.offerFirst(pRoot);
+        while (!deque.isEmpty()) {
+            int size = deque.size();
+            ArrayList<Integer> list = new ArrayList<>();
+            if (flag) {
+                for (int i = 0; i < size; i++) {
+                    TreeNode curr = deque.pollFirst();
+                    list.add(curr.val);
+                    if (curr.left != null) deque.offerLast(curr.left);
+                    if (curr.right != null) deque.offerLast(curr.right);
+                }
+                flag = false;
+            } else {
+                for (int i = 0; i < size; i++) {
+                    TreeNode curr = deque.pollLast();
+                    list.add(curr.val);
+                    if (curr.right != null) deque.offerFirst(curr.right);
+                    if (curr.left != null) deque.offerFirst(curr.left);
+                }
+                flag = true;
+            }
+            ret.add(list);
+        }
+        return ret;
+    }
 }

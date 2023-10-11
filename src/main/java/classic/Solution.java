@@ -91,7 +91,7 @@ public class Solution {
     }
 
     // 快速选择
-    public int quickSelect(int[] nums, int k) {
+    public static int quickSelect(int[] nums, int k) {
         int n = nums.length;
         int lo = 0, hi = n - 1;
         while (lo < hi) {
@@ -107,7 +107,7 @@ public class Solution {
         return nums[k];
     }
 
-    private int partition(int[] nums, int lo, int hi) {
+    private static int partition(int[] nums, int lo, int hi) {
         int i = lo, j = hi + 1;
         while (true) {
             while (nums[++i] < nums[lo] && i < hi);
@@ -119,15 +119,15 @@ public class Solution {
         return j;
     }
 
-    private void swap(int[] nums, int i, int j) {
+    private static void swap(int[] nums, int i, int j) {
         int t = nums[i];
         nums[i] = nums[j];
         nums[j] = t;
     }
 
     // 随机快速选择
-    private Random random;
-    public int randomizedSelect(int[] nums, int k) {
+    private static Random random;
+    public static int randomizedSelect(int[] nums, int k) {
         int n = nums.length;
         int lo = 0, hi = n - 1;
         while (lo < hi) {
@@ -142,13 +142,37 @@ public class Solution {
         }
         return nums[k];
     }
-    private int randomizedPartition(int[] nums, int lo, int hi) {
+    private static int randomizedPartition(int[] nums, int lo, int hi) {
         int r = lo + random.nextInt(hi - lo + 1);
         swap(nums, r, lo);
         return partition(nums, lo, hi);
     }
 
+    // 快速排序（优化partition）
+    public static void quickSort(int[] nums) {
+        quickSort(nums, 0, nums.length - 1);
+    }
+
+    private static void quickSort(int[] nums, int lo, int hi) {
+        if (lo < hi) {
+            int i = lo, j = hi + 1;
+            while (true) {
+                while (nums[++i] < nums[lo] && i < hi);
+                while (nums[--j] > nums[hi] && j > lo);
+                if (i >= j) break;
+                swap(nums, i, j);
+            }
+            swap(nums, j, lo);
+            quickSort(nums, lo, j - 1);
+            quickSort(nums, j + 1, hi);
+        }
+    }
+
     public static void main(String[] args) {
-        System.out.println(quickPow(73, 189));
+        int[] nums = {0, 7, 3, 9, 2, 43, 101, 4};
+        quickSort(nums);
+        for (int i : nums) {
+            System.out.println(i);
+        }
     }
 }

@@ -1,43 +1,42 @@
 package leetcode.ds;
 
-import java.util.Stack;
+import java.util.Deque;
+import java.util.ArrayDeque;
 
 public class MyQueue {
-    private Stack<Integer> storage;
-    private Stack<Integer> cache;
+    private Deque<Integer> in;
+    private Deque<Integer> out;
 
     public MyQueue() {
-        storage = new Stack<>();
-        cache = new Stack<>();
+        in = new ArrayDeque<>();
+        out = new ArrayDeque<>();
     }
     
     public void push(int x) {
-        storage.push(x);
+        in.push(x);
     }
     
     public int pop() {
-        while(!storage.isEmpty()) {
-            cache.push(storage.pop());
+        if (out.isEmpty()) {
+            in2out();
         }
-        int ret = cache.pop();
-        while(!cache.isEmpty()) {
-            storage.push(cache.pop());
-        }
-        return ret;
+        return out.pop();
     }
     
     public int peek() {
-        while(!storage.isEmpty()) {
-            cache.push(storage.pop());
+        if (out.isEmpty()) {
+            in2out();
         }
-        int ret = cache.peek();
-        while(!cache.isEmpty()) {
-            storage.push(cache.pop());
-        }
-        return ret;
+        return out.peek();
     }
     
     public boolean empty() {
-        return storage.isEmpty();
+        return in.isEmpty() && out.isEmpty();
+    }
+
+    private void in2out() {
+        while (!in.isEmpty()) {
+            out.push(in.pop());
+        }
     }
 }

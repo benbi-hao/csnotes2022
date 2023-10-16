@@ -97,6 +97,7 @@ public class Solution {
     }
     
     // 77. 按之字形顺序打印二叉树
+    // 或者层次遍历，偶数层reverse一下就行
     public ArrayList<ArrayList<Integer>> Print (TreeNode pRoot) {
         ArrayList<ArrayList<Integer>> ret = new ArrayList<>();
         if (pRoot == null) return ret;
@@ -124,6 +125,29 @@ public class Solution {
                 flag = true;
             }
             ret.add(list);
+        }
+        return ret;
+    }
+
+    // 14. 剪绳子
+    public int cutRope (int n) {
+        if (n <= 3) return n - 1;
+        int remainder = n % 3;
+        int ret = 1;
+        if (remainder == 0) {
+            for (int i = 0; i < n / 3; i++) {
+                ret *= 3;
+            }
+        } else if (remainder == 1) {
+            for (int i = 0; i < n / 3 - 1; i++) {
+                ret *= 3;
+            }
+            ret *= 4;
+        } else {
+            for (int i = 0; i < n / 3; i++) {
+                ret *= 3;
+            }
+            ret *= 2;
         }
         return ret;
     }

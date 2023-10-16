@@ -2251,20 +2251,50 @@ public class Solution {
     /**
      * 排序
      */
-    // 二分查找
-    public int binarySearch(int[] nums, int key) {
+    // 经典二分查找
+    public int binarySearch(int[] nums, int target) {
         int lo = 0, hi = nums.length - 1;
         while (lo <= hi) {
             int mid = lo + (hi - lo) / 2;
-            if (nums[mid] == key) {
+            if (nums[mid] == target) {
                 return mid;
-            } else if (nums[mid] < key) {
+            } else if (nums[mid] < target) {
                 lo = mid + 1;
             } else {
                 hi = mid - 1;
             }
         }
         return -1;
+    }
+
+    // 二分查找变体：寻找第一个target，找不到就返回比target大的第一个下标
+    // 如果要寻找最后一个target，那么也相当于寻找第一个(target + 1)的下标 - 1
+    // 有下面两种写法，注意while循环条件、lo和hi变化逻辑、hi的初始值，在不同写法内部是一致的，不能随便改
+    // 写法一
+    public int findFirstClassic1(int[] nums, int target) {
+        int lo = 0, hi = nums.length - 1;
+        while (lo <= hi) {
+            int mid = lo + (hi - lo) / 2;
+            if (nums[mid] < target) {
+                lo = mid + 1;
+            } else {
+                hi = mid + 1;
+            }
+        }
+        return lo;
+    }
+    // 写法二
+    public int findFirstClassic2(int[] nums, int target) {
+        int lo = 0, hi = nums.length;
+        while (lo < hi) {
+            int mid = lo + (hi - lo) / 2;
+            if (nums[mid] < target) {
+                lo = mid + 1;
+            } else {
+                hi = mid;
+            }
+        }
+        return lo;
     }
 
     // 69. x的平方根

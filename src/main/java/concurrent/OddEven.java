@@ -156,7 +156,7 @@ public class OddEven {
 
     // 4. synchronized模拟semaphore
     // 用synchronized机制和两个锁两个count模拟了信号量的操作
-    // 因为用synchronized对信号量操作做了互斥，所以效率不如native的信号量高
+    // 因为用synchronized对信号量操作做了互斥，所以效率不如JDK的信号量高
     // 经测试即使是多个奇数线程和多个偶数线程也正确
     // 可以将PV逻辑封装起来，具体见项目里的concurrent.util.MySemaphore
     // 这里count不加volatile也不影响，为了规范点还是加上了，为什么不加也不影响？这个问题有待深究

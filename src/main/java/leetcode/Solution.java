@@ -1151,6 +1151,48 @@ public class Solution {
         return length;
     }
 
+    // 49. 字母异位词分组
+    // 将字母排序作为键
+    public List<List<String>> groupAnagramsSort(String[] strs) {
+        Map<String, List<String>> map = new HashMap<>();
+        for (String str : strs) {
+            char[] chars = str.toCharArray();
+            Arrays.sort(chars);
+            String key = new String(chars);
+            List<String> list = map.getOrDefault(key, new ArrayList<>());
+            list.add(str);
+            map.put(key, list);
+        }
+        List<List<String>> ret = new ArrayList<>();
+        for (Map.Entry<String, List<String>> entry : map.entrySet()) {
+            ret.add(entry.getValue());
+        }
+        
+        return new ArrayList<>(map.values());
+    }
+
+    // 对字母频率编码作为键
+    public List<List<String>> groupAnagrams(String[] strs) {
+        Map<String, List<String>> map = new HashMap<>();
+        for (String str : strs) {
+            int[] countMap = new int[26];
+            for (char c : str.toCharArray()) {
+                countMap[c - 'a']++;
+            }
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < 26; i++) {
+                sb.append('a' + i);
+                sb.append(countMap[i]);
+            }
+            String key = sb.toString();
+            List<String> list = map.getOrDefault(key, new ArrayList<>());
+            list.add(str);
+            map.put(key, list);
+        }
+
+        return new ArrayList<>(map.values());
+    }
+
     /**
      * 字符串
      */
@@ -1991,6 +2033,78 @@ public class Solution {
                 longestWord = word;
         }
         return longestWord;
+    }
+
+    // 11. 乘最多水的容器
+    public int maxArea(int[] height) {
+        int l = 0, r = height.length - 1;
+        int ret = 0;
+
+        int lh = height[l], rh = height[r];
+        while (l < r) {
+            int currArea = Math.min(lh, rh) * (r - l);
+            ret = Math.max(ret, currArea);
+            if (lh < rh) {
+                while (height[++l] <= lh && l < r);
+                lh = height[l];
+            } else {
+                while (height[--r] <= rh && l < r);
+                rh = height[r];
+            }
+        }
+        return ret;
+    }
+
+    // 15. 三数之和
+    public List<List<Integer>> threeSum(int[] nums) {
+        List<List<Integer>> ret = new ArrayList<>();
+        Arrays.sort(nums);
+        int n = nums.length;
+        if (nums[0] > 0 || nums[n - 1] < 0) return ret;
+        for (int lo = 0; lo <= n - 3; lo++) {
+            if (lo > 0 && nums[lo] == nums[lo - 1]) continue;
+            int i = lo + 1, j = n - 1;
+            int target = -nums[lo];
+            while (i < j) {
+                if (i > lo + 1 && nums[i] == nums[i - 1]) {
+                    i++;
+                    continue;
+                }
+                int sum = nums[i] + nums[j];
+                if (sum == target) {
+                    List<Integer> tuple = new ArrayList<>();
+                    tuple.add(nums[lo]);
+                    tuple.add(nums[i]);
+                    tuple.add(nums[j]);
+                    ret.add(tuple);
+                    i++;
+                    j--;
+                } else if (sum < target) {
+                    i++;
+                } else {
+                    j--;
+                }
+            }
+        }
+        return ret;
+    }
+
+    // 42.接雨水
+    public int trap(int[] height) {
+        int l = 0, r = height.length - 1;
+        int lh = height[l], rh = height[r];
+        int volume = 0;
+        while (l < r) {
+            if (lh < rh) {
+                lh = Math.max(lh, height[++l]);
+                volume += lh - height[l];
+            } else {
+                rh = Math.max(rh, height[--r]);
+                volume += rh - height[r];
+                
+            }
+        }
+        return volume;
     }
 
     /**
@@ -3635,6 +3749,113 @@ public class Solution {
         }
         return Math.max(max1*max2*max3, max1*min1*min2);
     }
+
+    /*
+     * 面试题
+     */
+    // 56. 合并区间
+    public int[][] merge(int[][] intervals) {
+        Arrays.sort(intervals, (i1, i2) -> i1[0] - i2[0]);
+        List<int[]> newIntervals = new ArrayList<>();
+        int lo = intervals[0][0];
+        int hi = intervals[0][1];
+        for (int[] interval : intervals) {
+            if (interval[0] <= hi) {
+                hi = Math.max(hi, interval[1]);
+            } else {
+                newIntervals.add(new int[]{lo, hi});
+                lo = interval[0];
+                hi = interval[1];
+            }
+        }
+        newIntervals.add(new int[]{lo, hi});
+        return newIntervals.toArray(new int[newIntervals.size()][]);
+    }
+
+    // 有序区间里插入一个区间并合并
+    // 转化为合并区间
+    public int[][] insertIntervalByMerge(int[][] intervals, int[] newInterval) {
+        int posToInsert = binarySearchInterval(intervals, newInterval);
+        int[][] inserted = new int[intervals.length + 1][2];
+        System.arraycopy(intervals, 0, inserted, 0, posToInsert);
+        inserted[posToInsert] = newInterval;
+        System.arraycopy(intervals, posToInsert, inserted, posToInsert + 1, intervals.length - posToInsert);
+        List<int[]> merged = new ArrayList<>();
+        int lo = inserted[0][0];
+        int hi = inserted[0][1];
+        for (int i = 0; i < inserted.length; i++) {
+            if (inserted[i][0] <= hi) {
+                hi = Math.max(hi, inserted[i][1]);
+            } else {
+                merged.add(new int[]{lo, hi});
+                lo = inserted[i][0];
+                hi = inserted[i][1];
+            }
+        }
+        merged.add(new int[]{lo, hi});
+        return merged.toArray(new int[0][]);
+    }
+
+    private int binarySearchInterval(int[][] intervals, int[] newInterval) {
+        int lo = 0, hi = intervals.length - 1;
+        while (lo <= hi) {
+            int mid = lo + (hi - lo) / 2;
+            if (intervals[mid][0] < newInterval[0]) {
+                lo = mid + 1;
+            } else {
+                hi = mid - 1;
+            }
+        }
+        return lo;
+    }
+
+    // 有序区间里插入一个区间并合并
+    // 二分查找找头尾，确定结果数组长度，然后直接arraycopy
+    public int[][] insertInterval(int[][] intervals, int[] newInterval) {
+        // 找第一个右边界大于等于newInterval左边界的区间
+        int left = binarySearchForLeft(intervals, newInterval[0]);
+        // 找最后一个左边界小于等于newInterval右边界的区间
+        int right = binarySearchForRight(intervals, newInterval[1]);
+        int newLen = intervals.length - (right - left);
+        int[][] ret = new int[newLen][2];
+        System.arraycopy(intervals, 0, ret, 0, left);
+        if (left <= right) {
+            newInterval[0] = Math.min(newInterval[0], intervals[left][0]);
+            newInterval[1] = Math.max(newInterval[1], intervals[right][1]);
+        }
+        ret[left] = newInterval;
+        System.arraycopy(intervals, right + 1, ret, left + 1, intervals.length - right - 1);
+        return ret;
+    }
+
+    private int binarySearchForLeft(int[][] intervals, int leftVal) {
+        int lo = 0, hi = intervals.length - 1;
+        while (lo <= hi) {
+            int mid = lo + (hi - lo) / 2;
+            if (intervals[mid][1] < leftVal) {
+                lo = mid + 1;
+            } else {
+                hi = mid - 1;
+            }
+        }
+        return lo;
+    }
+
+    private int binarySearchForRight(int[][] intervals, int rightVal) {
+        int lo = 0, hi = intervals.length - 1;
+        while (lo <= hi) {
+            int mid = lo + (hi - lo) / 2;
+            if (intervals[mid][0] > rightVal) {
+                hi = mid - 1;
+            } else {
+                lo = mid + 1;
+            }
+        }
+        return hi;
+    }
+    /*
+     * leetcode 100
+     */
 
     
 }

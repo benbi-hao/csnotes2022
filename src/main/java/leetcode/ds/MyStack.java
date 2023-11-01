@@ -37,31 +37,31 @@ import java.util.Queue;
 // }
 
 // 1个队列写法
-// public class MyStack {
-//     private Queue<Integer> queue;
+public class MyStack {
+    private Queue<Integer> queue;
 
 
-//     public MyStack() {
-//         queue = new ArrayDeque<>();
-//     }
+    public MyStack() {
+        queue = new ArrayDeque<>();
+    }
     
-//     public void push(int x) {
-//         int cnt = queue.size();
-//         queue.offer(x);
-//         while (cnt-- > 0) {
-//             queue.offer(queue.poll());
-//         }
-//     }
+    public void push(int x) {
+        int cnt = queue.size();
+        queue.offer(x);
+        while (cnt-- > 0) {
+            queue.offer(queue.poll());
+        }
+    }
     
-//     public int pop() {
-//         return queue.poll();
-//     }
+    public int pop() {
+        return queue.poll();
+    }
     
-//     public int top() {
-//         return queue.peek();
-//     }
+    public int top() {
+        return queue.peek();
+    }
     
-//     public boolean empty() {
-//         return queue.isEmpty();
-//     }
-// }
+    public boolean empty() {
+        return queue.isEmpty();
+    }
+}

@@ -2108,6 +2108,155 @@ public class Solution {
     }
 
     /**
+     * 滑动窗口
+     */
+    // 3. 无重复字符的最长子串
+    public int lengthOfLongestSubstring(String s) {
+        int[] lastIndex = new int[256];
+        Arrays.fill(lastIndex, -1);
+        int n = s.length();
+        int longest = 0;
+        int start = -1;
+        for (int i = 0; i < n; i++) {
+            char c = s.charAt(i);
+            start = Math.max(start, lastIndex[c]);
+            longest = Math.max(longest, i - start);
+            lastIndex[c] = i;
+        }
+        return longest;
+    }
+
+    // 239. 找到字符串中所有字母异味词
+    public List<Integer> findAnagrams(String s, String p) {
+        int n = s.length(), m = p.length();
+        if (n < m) {
+            return new ArrayList<>();
+        }
+        List<Integer> ret = new ArrayList<>();
+        int[] countMap = new int[26];
+        for (int i = 0; i < m; i++) {
+            countMap[s.charAt(i) - 'a']++;
+            countMap[p.charAt(i) - 'a']--;
+        }
+
+        int diff = 0;
+        for (int i = 0; i < 26; i++) {
+            if (countMap[i] != 0) {
+                diff++;
+            }
+        }
+        if (diff == 0) {
+            ret.add(0);
+        }
+
+        for (int i = 0; i < n - m; i++) {
+            char toAdd = s.charAt(i + m);
+            char toDel = s.charAt(i);
+            if (countMap[toDel - 'a'] == 1) {
+                diff--;
+            } else if (countMap[toDel - 'a'] == 0) {
+                diff++;
+            }
+            countMap[toDel - 'a']--;
+
+            if (countMap[toAdd - 'a'] == -1) {
+                diff--;
+            } else if (countMap[toAdd - 'a'] == 0) {
+                diff++;
+            }
+            countMap[toAdd - 'a']++;
+
+            if (diff == 0) {
+                ret.add(i + 1);
+            }
+        }
+        return ret;
+    }
+
+    // 560. 和为K的子数组
+    public int subarraySum(int[] nums, int k) {
+        int n = nums.length;
+        int preSum = 0;
+        int cnt = 0;
+        Map<Integer, Integer> map = new HashMap<>();
+        map.put(0, 1);
+        for (int i = 0; i < n; i++) {
+            preSum += nums[i];
+            if (map.containsKey(preSum - k)) {
+                cnt += map.get(preSum - k);
+            }
+            map.put(preSum, map.getOrDefault(preSum, 0) + 1);
+        }
+        return cnt;
+    }
+
+    // 239. 滑动窗口的最大值
+    public int[] maxSlidingWindow(int[] nums, int k) {
+        Deque<Integer> deque = new ArrayDeque<>();
+        int n = nums.length;
+        int[] ret = new int[n - k + 1];
+        int index = 0;
+        for (int i = 0; i < k; i++) {
+            while (!deque.isEmpty() && nums[deque.peekLast()] < nums[i]) {
+                deque.pollLast();
+            }
+            deque.offerLast(i);
+        }
+        ret[index++] = nums[deque.peekFirst()];
+        for (int i = k; i < n; i++) {
+            if (deque.peekFirst() <= i - k) {
+                deque.pollFirst();
+            }
+            while (!deque.isEmpty() && nums[deque.peekLast()] < nums[i]) {
+                deque.pollLast();
+            }
+            deque.offerLast(i);
+            ret[index++] = nums[deque.peekFirst()];
+        }
+        return ret;
+    }
+
+    // 76. 最小覆盖子串
+    public String minWindow(String s, String t) {
+        Map<Character, Integer> countMap = new HashMap<>();
+        for (char c : t.toCharArray()) {
+            countMap.put(c, countMap.getOrDefault(c, 0) - 1);
+        }
+        int l = 0, r = 0;
+        int diff = t.length();
+        int start = -1;
+        int minLen = Integer.MAX_VALUE;
+        int n = s.length();
+        while (r < n) {
+            char c = s.charAt(r);
+            r++;
+            if (countMap.containsKey(c)) {
+                int cnt = countMap.get(c);
+                if (cnt < 0) {
+                    diff--;
+                }
+                countMap.put(c, cnt + 1);
+            }
+            while (diff == 0) {
+                if (r - l < minLen) {
+                    start = l;
+                    minLen = r - l;
+                }
+                char toDel = s.charAt(l);
+                l++;
+                if (countMap.containsKey(toDel)) {
+                    int cnt = countMap.get(toDel);
+                    if (cnt <= 0) {
+                        diff++;
+                    }
+                    countMap.put(toDel, cnt - 1);
+                }
+            }
+        }
+        return start == -1 ? "" : s.substring(start, start + minLen);
+    }
+    
+    /**
      * 排序
      */
     // 215. 数组中的第K个最大元素(快速选择)
@@ -2169,6 +2318,8 @@ public class Solution {
             }
         }
     }
+
+
 
     /**
      * 贪心思想

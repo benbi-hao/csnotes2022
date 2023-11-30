@@ -3,6 +3,7 @@ package leetcode;
 import leetcode.ds.ListNode;
 import leetcode.ds.TreeNode;
 import leetcode.ds.NTreeNode;
+import leetcode.ds.Node;
 import leetcode.util.UnionFindArray;
 
 import java.lang.Math;
@@ -317,6 +318,70 @@ public class Solution {
 
         op.next = evenSentinel.next;
         return oddSentinel.next;
+    }
+
+    // 25. K个一组翻转链表
+    public ListNode reverseKGroup(ListNode head, int k) {
+        int len = 0;
+        ListNode p = head;
+        while (len < k && p != null) {
+            len++;
+            p = p.next;
+        }
+        if (len < k) return head;
+        ListNode prev = null, curr = head;
+        for (int i = 0; i < k; i++) {
+            ListNode t = curr.next;
+            curr.next = prev;
+            prev = curr;
+            curr = t;
+        }
+        head.next = reverseKGroup(p, k);
+        return prev;
+    }
+
+    // 138. 随机链表的复制
+    private Map<Node, Node> copyRandomListCache;
+
+    public Node copyRandomList(Node head) {
+        copyRandomListCache = new HashMap<>();
+        Node newHead = sequentialClone(head);
+        Node p = head, pNew = newHead;
+        while (p != null) {
+            pNew.random = copyRandomListCache.get(p.random);
+            p = p.next;
+            pNew = pNew.next;
+        }
+        return newHead;
+    }
+
+    private Node sequentialClone(Node head) {
+        if (head == null) return null;
+        Node node = new Node(head.val);
+        copyRandomListCache.put(head, node);
+        node.next = sequentialClone(head.next);
+        return node;
+    }
+
+    // 23. 合并K个升序列表
+    public ListNode mergeKLists(ListNode[] lists) {
+        ListNode sentinel = new ListNode(-1);
+        PriorityQueue<ListNode> heap = new PriorityQueue<>((n1, n2) -> n1.val - n2.val);
+        for (ListNode head : lists) {
+            if (head != null) {
+                heap.offer(head);
+            }
+        }
+        ListNode p = sentinel;
+        while (!heap.isEmpty()) {
+            ListNode node = heap.poll();
+            p.next = node;
+            p = p.next;
+            if (node.next != null) {
+                heap.offer(node.next);
+            }
+        }
+        return sentinel.next;
     }
 
     /**
@@ -1653,6 +1718,114 @@ public class Solution {
         return chunkCnt;
     }
 
+    // 189. 轮转数组
+    public void rotate(int[] nums, int k) {
+        int n = nums.length;
+        int r = n - k;
+        reverseArray(nums, 0, r - 1);
+        reverseArray(nums, r, n - 1);
+        reverseArray(nums, 0, n - 1);
+    }
+
+    private void reverseArray(int[] nums, int lo, int hi) {
+        while (lo < hi) {
+            swap(nums, lo++, hi--);
+        }
+    }
+
+    // 缺失的第一个正数
+    public int firstMissingPositive(int[] nums) {
+        int n = nums.length;
+        for (int i = 0; i < n; i++) {
+            if (nums[i] <= 0) {
+                nums[i] = n + 1;
+            }
+        }
+        for (int i = 0; i < n; i++) {
+            int pos = Math.abs(nums[i]);
+            if (pos <= n && nums[pos - 1] > 0) {
+                nums[pos - 1] = -nums[pos - 1];
+            }
+        }
+        for (int i = 0; i < n; i++) {
+            if (nums[i] > 0) {
+                return i + 1;
+            }
+        }
+        return n + 1;
+    }
+
+    // 73. 矩阵置零
+    // 可以将第一行和第一列作为标记数组，节省额外空间
+    public void setZeros(int[][] matrix) {
+        int m = matrix.length, n = matrix[0].length;
+        boolean[] rowIsZero = new boolean[m];
+        boolean[] colIsZero = new boolean[n];
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (matrix[i][j] == 0) {
+                    rowIsZero[i] = true;
+                    colIsZero[j] = true;
+                }
+            }
+        }
+        for (int i = 0; i < m; i++) {
+            if (rowIsZero[i]) {
+                Arrays.fill(matrix[i], 0);
+            } else {
+                for (int j = 0; j < n; j++) {
+                    if (colIsZero[j]) {
+                        matrix[i][j] = 0;
+                    }
+                }
+            }
+        }
+    }
+
+    // 54. 螺旋矩阵
+    public List<Integer> spiralOrder(int[][] matrix) {
+        List<Integer> ret = new ArrayList<>();
+        int m = matrix.length, n = matrix[0].length;
+        int top = 0, bottom = m - 1, left = 0, right = n - 1;
+        while (true) {
+            for (int j = left; j <= right; j++) {
+                ret.add(matrix[top][j]);
+            }
+            if (++top > bottom) break;
+            for (int i = top; i <= bottom; i++) {
+                ret.add(matrix[i][right]);
+            }
+            if (--right < left) break;
+            for (int j = right; j >= left; j--) {
+                ret.add(matrix[bottom][j]);
+            }
+            if (--bottom < top) break;
+            for (int i = bottom; i >= top; i--) {
+                ret.add(matrix[i][left]);
+            }
+            if (++left > right) break;
+        }
+        return ret;
+    }
+
+    // 48. 旋转图像
+    public void rotate(int[][] matrix) {
+        int n = matrix.length;
+        for (int i = 0; i < n / 2; i++) {
+            for (int j = 0; j < (n + 1) / 2; j++) {
+                int temp = matrix[i][j];
+                matrix[i][j] = matrix[n - j - 1][i];
+                matrix[n - j - 1][i] = matrix[n - i - 1][n - j - 1];
+                matrix[n - i - 1][n - j - 1] = matrix[j][n - i - 1];
+                matrix[j][n - i - 1] = temp;
+            }
+        }
+    }
+
+
+
+
+
     /**
      * 图
      */
@@ -2013,6 +2186,23 @@ public class Solution {
             fast = fast.next.next;
         }
         return false;
+    }
+
+    // 142. 环形链表2
+    public ListNode detectCycle(ListNode head) {
+        if (head == null || head.next == null) return null;
+        ListNode slow = head.next, fast = head.next.next;
+        while (slow != fast) {
+            if (fast == null || fast.next == null) return null;
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        slow = head;
+        while (slow != fast) {
+            slow = slow.next;
+            fast = fast.next;
+        }
+        return fast;
     }
 
     // 524. 通过删除字母匹配到字典里最长单词

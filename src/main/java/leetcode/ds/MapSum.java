@@ -1,19 +1,19 @@
 package leetcode.ds;
 
 public class MapSum {
-    private Node root;
+    private MapSumNode root;
 
     public MapSum() {
-        root = new Node();
+        root = new MapSumNode();
     }
 
     public void insert(String key, int val) {
         int len = key.length();
-        Node curr = root;
+        MapSumNode curr = root;
         for (int i = 0; i < len; i++) {
             int idx = indexForChar(key.charAt(i));
             if (curr.children[idx] == null) {
-                curr.children[idx] = new Node();
+                curr.children[idx] = new MapSumNode();
             }
             curr = curr.children[idx];
         }
@@ -22,7 +22,7 @@ public class MapSum {
 
     public int sum(String prefix) {
         int len = prefix.length();
-        Node curr = root;
+        MapSumNode curr = root;
         for (int i = 0; i < len; i++) {
             int idx = indexForChar(prefix.charAt(i));
             if (curr.children[idx] == null) {
@@ -33,10 +33,10 @@ public class MapSum {
         return sum(curr);
     }
 
-    private int sum(Node root) {
+    private int sum(MapSumNode root) {
         if (root == null) return 0;
         int sum = 0;
-        for (Node child : root.children) {
+        for (MapSumNode child : root.children) {
             sum += sum(child);
         }
         return sum + root.val;
@@ -47,11 +47,11 @@ public class MapSum {
     }
 }
 
-class Node {
+class MapSumNode {
     int val;
-    Node[] children;
-    Node() {
+    MapSumNode[] children;
+    MapSumNode() {
         val = 0;
-        children = new Node[26];
+        children = new MapSumNode[26];
     }
 }

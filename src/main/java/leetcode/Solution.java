@@ -1144,6 +1144,52 @@ public class Solution {
         return ret;
     }
 
+    // 962. 最大宽度坡
+    public int maxWidthRampBinarySearch(int[] nums) {
+        int n = nums.length;
+        int ret = 0;
+        List<Integer> candidates = new ArrayList<>();
+        candidates.add(0);
+
+        for (int i = 1; i < n; i++) {
+            int lo = 0, hi = candidates.size() - 1;
+            while (lo <= hi) {
+                int mid = lo + (hi - lo) / 2;
+                if (nums[candidates.get(mid)] > nums[i]) {
+                    lo = mid + 1;
+                } else {
+                    hi = mid - 1;
+                }
+            }
+            if (lo == candidates.size()) {
+                candidates.add(i);
+            } else {
+                ret = Math.max(ret, i - candidates.get(lo));
+            }
+
+        }
+        return ret;
+    }
+
+    public int maxWidthRampStack(int[] nums) {
+        int ret = 0;
+        int n = nums.length;
+        ArrayDeque<Integer> stack = new ArrayDeque<>();
+        for (int i = 0; i < n; i++) {
+            if (stack.isEmpty() || nums[stack.peek()] > nums[i]) {
+                stack.push(i);
+            }
+        }
+        for (int i = n - 1; i > 0; i--) {
+            if (stack.isEmpty()) break;
+            while (!stack.isEmpty() && nums[stack.peek()] <= nums[i]) {
+                int left = stack.pop();
+                ret = Math.max(ret, i - left);
+            }
+        }
+        return ret;
+    }
+
     /**
      * 哈希表
      */
@@ -4113,6 +4159,7 @@ public class Solution {
         return newIntervals.toArray(new int[newIntervals.size()][]);
     }
 
+    // 57. 插入区间
     // 有序区间里插入一个区间并合并
     // 转化为合并区间
     public int[][] insertIntervalByMerge(int[][] intervals, int[] newInterval) {
@@ -4152,7 +4199,7 @@ public class Solution {
 
     // 有序区间里插入一个区间并合并
     // 二分查找找头尾，确定结果数组长度，然后直接arraycopy
-    public int[][] insertInterval(int[][] intervals, int[] newInterval) {
+    public int[][] insertIntervalBinarySearch(int[][] intervals, int[] newInterval) {
         // 找第一个右边界大于等于newInterval左边界的区间
         int left = binarySearchForLeft(intervals, newInterval[0]);
         // 找最后一个左边界小于等于newInterval右边界的区间

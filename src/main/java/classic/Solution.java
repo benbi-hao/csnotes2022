@@ -119,6 +119,7 @@ public class Solution {
         }
         return lo;
     }
+    
     public static int findFirst2(int[] nums, int target) {
         int lo = 0, hi = nums.length;
         while (lo < hi) {
